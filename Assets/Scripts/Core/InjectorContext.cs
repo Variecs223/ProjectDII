@@ -5,6 +5,7 @@ using System.Reflection;
 using JetBrains.Annotations;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Bindables;
+using Object = UnityEngine.Object;
 
 namespace Variecs.ProjectDII.Core
 {
@@ -59,8 +60,27 @@ namespace Variecs.ProjectDII.Core
         public ProxyBinding<T> Bind<T>() where T: class
         {
             var type = typeof(T);
-
             var binding = ObjectPool<ProxyBinding<T>>.Get().Update(type, this);
+            
+            Bind(binding);
+
+            return binding;
+        }
+        
+        public ProxyBinding<T> BindGameObject<T>() where T: Object
+        {
+            var type = typeof(T);
+            var binding = ObjectPool<ProxyGameObjectBinding<T>>.Get().Update(type, this);
+            
+            Bind(binding);
+
+            return binding;
+        }
+        
+        public ProxyBinding<T> BindScriptableObject<T>() where T: ScriptableObject
+        {
+            var type = typeof(T);
+            var binding = ObjectPool<ProxyScriptableObjectBinding<T>>.Get().Update(type, this);
             
             Bind(binding);
 

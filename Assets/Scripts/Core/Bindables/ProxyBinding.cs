@@ -33,7 +33,7 @@ namespace Variecs.ProjectDII.Core.Bindables
         public ValueBinding<TBase> ToValue(TBase value)
         {
             Context.Unbind(this);
-            var binding = ObjectPool<ValueBinding<TBase>>.Get().Update(value);
+            var binding = ObjectPool<ValueBinding<TBase>>.Get().Update(this, value);
             Context.Bind(binding);
             
             return binding;
@@ -48,10 +48,10 @@ namespace Variecs.ProjectDII.Core.Bindables
             return binding;
         }
 
-        public MultitonBinding<TBase, TSpecific> ToMultiton<TSpecific>() where TSpecific : TBase, new()
+        public ObjectInstanceBinding<TBase, TSpecific> ToObjectInstance<TSpecific>() where TSpecific : TBase, new()
         {
             Context.Unbind(this);
-            var binding = ObjectPool<MultitonBinding<TBase, TSpecific>>.Get();
+            var binding = ObjectPool<ObjectInstanceBinding<TBase, TSpecific>>.Get().Update(this);
             Context.Bind(binding);
             
             return binding;

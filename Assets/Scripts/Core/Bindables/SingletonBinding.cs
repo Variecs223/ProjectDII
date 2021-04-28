@@ -5,9 +5,19 @@
         where TSpecific: TBase, new()
     {
         public static readonly TSpecific Instance = new TSpecific();
+        // ReSharper disable once StaticMemberInGenericType
+        private static bool instanceInjected;
         
         public TBase Inject()
         {
+            if (instanceInjected)
+            {
+                return Instance;
+            }
+            
+            InjectorContext.BaseContext.Inject(Instance);
+            instanceInjected = true;
+            
             return Instance;
         }
 
