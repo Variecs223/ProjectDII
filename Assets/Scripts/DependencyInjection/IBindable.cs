@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Variecs.ProjectDII.Core
+namespace Variecs.ProjectDII.DependencyInjection
 {
     public interface IBindable<out T>: IDisposable where T: class
     {

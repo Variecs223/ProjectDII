@@ -1,4 +1,4 @@
-﻿namespace Variecs.ProjectDII.Core.Bindables
+﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ValueBinding<T>: IBindable<T> where T: class
     {

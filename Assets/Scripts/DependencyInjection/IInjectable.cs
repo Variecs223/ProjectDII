@@ -1,5 +1,5 @@
 ﻿
-namespace Variecs.ProjectDII.Core
+namespace Variecs.ProjectDII.DependencyInjection
 {
     public interface IInjectable
     {

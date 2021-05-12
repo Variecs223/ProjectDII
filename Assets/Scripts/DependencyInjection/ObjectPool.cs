@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Variecs.ProjectDII.Core
+namespace Variecs.ProjectDII.DependencyInjection
 {
     public static class ObjectPool<T> where T: class, new()
     {

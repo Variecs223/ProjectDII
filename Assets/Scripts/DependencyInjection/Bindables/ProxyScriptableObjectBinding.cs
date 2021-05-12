@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Variecs.ProjectDII.Core.Bindables
+namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ProxyScriptableObjectBinding<TBase>: ProxyBinding<TBase> where TBase: ScriptableObject
     {

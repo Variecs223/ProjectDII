@@ -1,4 +1,4 @@
-﻿namespace Variecs.ProjectDII.Core.Bindables
+﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ObjectInstanceBinding<TBase, TSpecific>: IBindable<TBase> 
         where TBase: class 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Variecs.ProjectDII.Core.Bindables
+namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ScriptableObjectInstanceBinding<TBase, TSpecific>: IBindable<TBase> 
         where TBase: ScriptableObject 

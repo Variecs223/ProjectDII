@@ -4,14 +4,16 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using UnityEngine;
-using Variecs.ProjectDII.Core.Bindables;
+using Variecs.ProjectDII.DependencyInjection.Bindables;
 using Object = UnityEngine.Object;
 
-namespace Variecs.ProjectDII.Core
+namespace Variecs.ProjectDII.DependencyInjection
 {
     [CreateAssetMenu(fileName = "InjectorContext", menuName = "DII/Core/Injector Context", order = 0)]
     public class InjectorContext : ScriptableObject
     {
+        private const int InjectionListCapacity = 5;
+        
         private static InjectorContext baseContext;
 
         public static InjectorContext BaseContext
@@ -94,7 +96,7 @@ namespace Variecs.ProjectDII.Core
 
             if (!injections.ContainsKey(type))
             {
-                list = injections[type] = new List<IBindable<object>>();
+                list = injections[type] = new List<IBindable<object>>(InjectionListCapacity);
             }
             else
             {
@@ -107,36 +109,25 @@ namespace Variecs.ProjectDII.Core
         public void Unbind<T>() where T : class
         {
             var type = typeof(T);
-            List<IBindable<object>> list;
 
             if (!injections.ContainsKey(type))
             {
-                list = injections[type] = new List<IBindable<object>>();
-            }
-            else
-            {
-                list = injections[type];
+                return;
             }
             
+            var list = injections[type];
             list.ForEach(binding => binding.Dispose());
             list.Clear();
+
+
         }
         
-        public void Unbind<T>(IBindable<T> binding) where T: class
+        public void Unbind<T>([NotNull] IBindable<T> binding) where T: class
         {
             var type = typeof(T);
             List<IBindable<object>> list;
-
-            if (!injections.ContainsKey(type))
-            {
-                list = injections[type] = new List<IBindable<object>>();
-            }
-            else
-            {
-                list = injections[type];
-            }
-
-            if (list.Contains(binding))
+            
+            if (injections.ContainsKey(type) && (list = injections[type]).Contains(binding))
             {
                 list.Remove(binding);
                 binding.Dispose();

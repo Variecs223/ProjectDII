@@ -1,7 +1,6 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Variecs.ProjectDII.Core.Bindables
+namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class PrefabInstanceBinding<TBase>: IBindable<TBase> 
         where TBase: Object 

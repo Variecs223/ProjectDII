@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Variecs.ProjectDII.Core.Bindables
+namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ProxyBinding<TBase>: IBindable<TBase> where TBase: class
     {
@@ -52,6 +52,15 @@ namespace Variecs.ProjectDII.Core.Bindables
         {
             Context.Unbind(this);
             var binding = ObjectPool<ObjectInstanceBinding<TBase, TSpecific>>.Get().Update(this);
+            Context.Bind(binding);
+            
+            return binding;
+        }
+
+        public FactoryBinding<TBase> ToFactory(IFactory<TBase> factory)
+        {
+            Context.Unbind(this);
+            var binding = ObjectPool<FactoryBinding<TBase>>.Get().Update(this, factory);
             Context.Bind(binding);
             
             return binding;
