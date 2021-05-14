@@ -2,7 +2,7 @@
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
-    public class ScriptableObjectInstanceBinding<TBase, TSpecific>: IBindable<TBase> 
+    public class ScriptableObjectInstanceBinding<TBase, TSpecific>: BaseBinding<TBase>
         where TBase: ScriptableObject 
         where TSpecific: TBase
     {
@@ -11,10 +11,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public ScriptableObjectInstanceBinding<TBase, TSpecific> Update(ProxyBinding<TBase> proxy)
         {
             Context = proxy.Context;
+            Conditions = proxy.Conditions;
             return this;
         }
         
-        public TBase Inject()
+        public override TBase Inject()
         {
             var newInstance = ScriptableObject.CreateInstance<TSpecific>();
             
@@ -23,12 +24,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             return newInstance;
         }
 
-        public bool CheckConditions()
-        {
-            return true;
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             ObjectPool<ScriptableObjectInstanceBinding<TBase, TSpecific>>.Put(this);
         }

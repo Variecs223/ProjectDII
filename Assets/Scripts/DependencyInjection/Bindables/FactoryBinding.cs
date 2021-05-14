@@ -1,6 +1,6 @@
 ﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
-    public class FactoryBinding<TBase>: IBindable<TBase> 
+    public class FactoryBinding<TBase>: BaseBinding<TBase>
         where TBase: class
     {
         
@@ -10,11 +10,12 @@
         public FactoryBinding<TBase> Update(ProxyBinding<TBase> proxy, IFactory<TBase> factory)
         {
             Context = proxy.Context;
+            Conditions = proxy.Conditions;
             Factory = factory;
             return this;
         }
         
-        public TBase Inject()
+        public override TBase Inject()
         {
             var instance = Factory.GetInstance();
 
@@ -26,12 +27,7 @@
             return instance;
         }
 
-        public bool CheckConditions()
-        {
-            return true;
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             ObjectPool<FactoryBinding<TBase>>.Put(this);
             Factory.Dispose();

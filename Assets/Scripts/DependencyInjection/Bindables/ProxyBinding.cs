@@ -2,7 +2,7 @@
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
-    public class ProxyBinding<TBase>: IBindable<TBase> where TBase: class
+    public class ProxyBinding<TBase>: BaseBinding<TBase> where TBase: class
     {
         public Type Target { get; private set; }
         public InjectorContext Context { get; private set; }
@@ -15,17 +15,12 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             return this;
         }
 
-        public TBase Inject()
+        public override TBase Inject()
         {
             return default;
         }
 
-        public bool CheckConditions()
-        {
-            return true;
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             ObjectPool<ProxyBinding<TBase>>.Put(this);
         }
@@ -42,7 +37,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public SingletonBinding<TBase, TSpecific> ToSingleton<TSpecific>() where TSpecific : TBase, new()
         {
             Context.Unbind(this);
-            var binding = ObjectPool<SingletonBinding<TBase, TSpecific>>.Get();
+            var binding = ObjectPool<SingletonBinding<TBase, TSpecific>>.Get().Update(this);
             Context.Bind(binding);
             
             return binding;

@@ -1,22 +1,23 @@
 ﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
-    public class ValueBinding<T>: IBindable<T> where T: class
+    public class ValueBinding<TBase>: BaseBinding<TBase> where TBase: class
     {
-        public T Value { get; private set; }
+        public TBase Value { get; private set; }
         public InjectorContext Context { get; private set; }
 
         private bool valueInjected;
 
-        public ValueBinding<T> Update(ProxyBinding<T> proxy, T value)
+        public ValueBinding<TBase> Update(ProxyBinding<TBase> proxy, TBase value, bool injectManually = false)
         {
             Value = value;
             Context = proxy.Context;
-            valueInjected = false;
+            Conditions = proxy.Conditions;
+            valueInjected = injectManually;
             
             return this;
         }
         
-        public T Inject()
+        public override TBase Inject()
         {
             if (valueInjected)
             {
@@ -29,14 +30,9 @@
             return Value;
         }
 
-        public bool CheckConditions()
+        public override void Dispose()
         {
-            return true;
-        }
-
-        public void Dispose()
-        {
-            ObjectPool<ValueBinding<T>>.Put(this);
+            ObjectPool<ValueBinding<TBase>>.Put(this);
             valueInjected = false;
         }
     }

@@ -8,8 +8,9 @@ namespace Variecs.ProjectDII.DependencyInjection
         TInstance GetInstance();
     }
     
-    public interface IFactory<out TInstance, in TArgument>: IFactory<TInstance>
+    public interface IFactory<out TInstance, in TArgument>: IDisposable
     {
+        bool ManuallyInjected { get; }
         TInstance GetInstance(TArgument argument = default);
     }
 }

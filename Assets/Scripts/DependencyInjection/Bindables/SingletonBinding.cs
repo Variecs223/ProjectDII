@@ -1,32 +1,36 @@
 ﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
-    public class SingletonBinding<TBase, TSpecific>: IBindable<TBase> 
+    public class SingletonBinding<TBase, TSpecific>: BaseBinding<TBase>
         where TBase: class 
         where TSpecific: TBase, new()
     {
         public static readonly TSpecific Instance = new TSpecific();
         // ReSharper disable once StaticMemberInGenericType
         private static bool instanceInjected;
+
+        public InjectorContext Context { get; private set; }
+
+        public SingletonBinding<TBase, TSpecific> Update(ProxyBinding<TBase> proxy)
+        {
+            Context = proxy.Context;
+            Conditions = proxy.Conditions;
+            return this;
+        }
         
-        public TBase Inject()
+        public override TBase Inject()
         {
             if (instanceInjected)
             {
                 return Instance;
             }
             
-            InjectorContext.BaseContext.Inject(Instance);
+            Context.Inject(Instance);
             instanceInjected = true;
             
             return Instance;
         }
 
-        public bool CheckConditions()
-        {
-            return true;
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             ObjectPool<SingletonBinding<TBase, TSpecific>>.Put(this);
         }

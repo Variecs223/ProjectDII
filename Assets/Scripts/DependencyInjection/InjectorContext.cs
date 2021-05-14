@@ -10,7 +10,7 @@ using Object = UnityEngine.Object;
 namespace Variecs.ProjectDII.DependencyInjection
 {
     [CreateAssetMenu(fileName = "InjectorContext", menuName = "DII/Core/Injector Context", order = 0)]
-    public class InjectorContext : ScriptableObject
+    public class InjectorContext : ScriptableObject, IDisposable
     {
         private const int InjectionListCapacity = 5;
         
@@ -49,7 +49,7 @@ namespace Variecs.ProjectDII.DependencyInjection
         private readonly List<InjectorContext> childContexts = new List<InjectorContext>();
         public IReadOnlyList<InjectorContext> ChildContexts => childContexts;
 
-        private readonly Dictionary<Type, List<IBindable<object>>> injections = new Dictionary<Type, List<IBindable<object>>>();
+        private readonly IDictionary<Type, List<IBindable<object>>> injections = new Dictionary<Type, List<IBindable<object>>>();
 
         protected void Awake()
         {
@@ -118,8 +118,6 @@ namespace Variecs.ProjectDII.DependencyInjection
             var list = injections[type];
             list.ForEach(binding => binding.Dispose());
             list.Clear();
-
-
         }
         
         public void Unbind<T>([NotNull] IBindable<T> binding) where T: class
@@ -167,14 +165,36 @@ namespace Variecs.ProjectDII.DependencyInjection
                 return result;
             }
 
-            foreach (var injection in injections[field.FieldType])
+            IBindable<object> selectedInjection = null;
+            
+            foreach (var injection in injections[field.FieldType].Where(injection => injection.CheckConditions(target)))
             {
                 field.SetValue(target, injection.Inject());
+
+                if (target is IInjectable injectable)
+                {
+                    injectable.OnInjected();
+                }
+                
+                selectedInjection = injection;
+                break;
+            }
+
+            injections[field.FieldType].RemoveAll(inj => inj.Temporary);
+            
+            if (selectedInjection != null)
+            {
                 return true;
             }
             
             Debug.LogError($"No matching bindings found for type {field.FieldType} when injecting into field {field.Name} of object {target}");
             return false;
         }
+        
+        public void Dispose() 
+        {
+            injections.Clear();
+        }
     }
+    
 }

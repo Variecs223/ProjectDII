@@ -2,7 +2,7 @@
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
-    public class PrefabInstanceBinding<TBase>: IBindable<TBase> 
+    public class PrefabInstanceBinding<TBase>: BaseBinding<TBase> 
         where TBase: Object 
     {
         public TBase Prefab { get; private set; }
@@ -14,10 +14,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             Prefab = prefab;
             Parent = parent;
             Context = proxy.Context;
+            Conditions = proxy.Conditions;
             return this;
         }
         
-        public TBase Inject()
+        public override TBase Inject()
         {
             var newInstance = Object.Instantiate(Prefab, Parent);
             
@@ -26,12 +27,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             return newInstance;
         }
 
-        public bool CheckConditions()
-        {
-            return true;
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             ObjectPool<PrefabInstanceBinding<TBase>>.Put(this);
         }
