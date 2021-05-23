@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,7 +10,7 @@ using Object = UnityEngine.Object;
 
 namespace Variecs.ProjectDII.DependencyInjection
 {
-    [CreateAssetMenu(fileName = "InjectorContext", menuName = "DII/Core/Injector Context", order = 0)]
+    [CreateAssetMenu(fileName = "InjectorContext", menuName = "DII/Dependency Injection/Injector Context", order = 0)]
     public class InjectorContext : ScriptableObject, IDisposable
     {
         private const int InjectionListCapacity = 5;
@@ -49,13 +50,28 @@ namespace Variecs.ProjectDII.DependencyInjection
         private readonly List<InjectorContext> childContexts = new List<InjectorContext>();
         public IReadOnlyList<InjectorContext> ChildContexts => childContexts;
 
-        private readonly IDictionary<Type, List<IBindable<object>>> injections = new Dictionary<Type, List<IBindable<object>>>();
+        private readonly Dictionary<Type, List<IBindable<object>>> injections = new Dictionary<Type, List<IBindable<object>>>();
 
-        protected void Awake()
+        private readonly HashSet<object> injectedObjects = new HashSet<object>();
+        private bool initialized;
+
+        protected virtual void PreInject()
         {
+            initialized = true;
+
+            if (ParentContext == null && this != BaseContext)
+            {
+                ParentContext = BaseContext;
+            }
+            
             if (ParentContext != null)
             {
                 ParentContext.childContexts.Add(this);
+
+                if (!ParentContext.initialized)
+                {
+                    ParentContext.PreInject();
+                }
             }
         }
         
@@ -136,10 +152,62 @@ namespace Variecs.ProjectDII.DependencyInjection
             }
         }
 
+        public IBindable<T> FindBinding<T>(Predicate<IBindable<T>> predicate) where T: class
+        {
+            var type = typeof(T);
+            
+            if (injections.ContainsKey(type))
+            {
+                foreach (var binding in injections[type])
+                {
+                    if (binding is IBindable<T> concreteBinding && predicate.Invoke(concreteBinding))
+                    {
+                        return concreteBinding;
+                    }
+                }
+            }
+
+            return ParentContext == null ? null : ParentContext.FindBinding(predicate);
+        }
+
+        public void MarkAsInjected(object target)
+        {
+            injectedObjects.Add(target);
+
+            if (ParentContext != null)
+            {
+                ParentContext.MarkAsInjected(target);
+            }
+        }
+        
+        public void UnmarkAsInjected(object target)
+        {
+            injectedObjects.Remove(target);
+        }
+
+        public void RemoveTemporaryBindings<T>()
+        {
+            injections[typeof(T)].RemoveAll(inj => inj.Temporary);
+        }
+        
         public void Inject(object target)
         {
+            if (!initialized)
+            {
+                PreInject();
+            }
+
+            if (injectedObjects.Contains(target))
+            {
+                return;
+            }
+            
+            MarkAsInjected(target);
+            
             var type = target.GetType();
-            var fields = type.GetFields();
+            var fields = type.GetFields(BindingFlags.Instance | 
+                                        BindingFlags.NonPublic |
+                                        BindingFlags.Public);
 
             // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var field in fields.Where(f => f.GetCustomAttributes<InjectAttribute>().Any()))
@@ -153,47 +221,44 @@ namespace Variecs.ProjectDII.DependencyInjection
 
         private bool InjectField(object target, FieldInfo field)
         {
-            if (!injections.ContainsKey(field.FieldType))
-            {
-                var result = ParentContext == null || ParentContext.InjectField(target, field);
-                
-                if (!result)
-                {
-                    Debug.LogError($"No bindings found for type {field.FieldType} when injecting into field {field.Name} of object {target}");
-                }
-                
-                return result;
-            }
-
             IBindable<object> selectedInjection = null;
-            
-            foreach (var injection in injections[field.FieldType].Where(injection => injection.CheckConditions(target)))
+
+            if (injections.ContainsKey(field.FieldType))
             {
-                field.SetValue(target, injection.Inject());
-
-                if (target is IInjectable injectable)
+                foreach (var injection in injections[field.FieldType].Where(injection => injection.CheckConditions(target, field)))
                 {
-                    injectable.OnInjected();
-                }
-                
-                selectedInjection = injection;
-                break;
-            }
+                    field.SetValue(target, injection.Inject());
 
-            injections[field.FieldType].RemoveAll(inj => inj.Temporary);
+                    if (target is IInjectable injectable)
+                    {
+                        injectable.OnInjected();
+                    }
+                
+                    selectedInjection = injection;
+                    break;
+                }
+            }
             
-            if (selectedInjection != null)
+            if (selectedInjection != null || field.GetCustomAttribute<InjectAttribute>().Optional)
             {
                 return true;
             }
             
-            Debug.LogError($"No matching bindings found for type {field.FieldType} when injecting into field {field.Name} of object {target}");
+            Debug.LogError($"No bindings found for type {field.FieldType} when injecting into mandatory field {field.Name} of object {target}");
             return false;
         }
         
-        public void Dispose() 
+        public virtual void Dispose() 
         {
+
+            if (ParentContext != null && ParentContext.ChildContexts.Contains(this))
+            {
+                ParentContext.childContexts.Remove(this);
+            }
+            
             injections.Clear();
+            injectedObjects.Clear();
+            initialized = false;
         }
     }
     

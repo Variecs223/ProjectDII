@@ -1,4 +1,6 @@
-﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
+﻿using System.Collections.Generic;
+
+namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ObjectInstanceBinding<TBase, TSpecific>: BaseBinding<TBase> 
         where TBase: class 
@@ -6,10 +8,10 @@
     {
         public InjectorContext Context { get; private set; }
 
-        public ObjectInstanceBinding<TBase, TSpecific> Update(ProxyBinding<TBase> proxy)
+        public ObjectInstanceBinding<TBase, TSpecific> Update(InjectorContext context, IList<ICondition> conditions)
         {
-            Context = proxy.Context;
-            Conditions = proxy.Conditions;
+            Context = context;
+            Conditions = conditions;
             return this;
         }
         
@@ -25,6 +27,11 @@
         public override void Dispose()
         {
             ObjectPool<ObjectInstanceBinding<TBase, TSpecific>>.Put(this);
+        }
+        
+        public override IBindable<TBase> Clone()
+        {
+            return ObjectPool<ObjectInstanceBinding<TBase, TSpecific>>.Get().Update(Context, Conditions);
         }
     }
 }

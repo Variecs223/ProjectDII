@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
@@ -8,10 +9,10 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
     {
         public InjectorContext Context { get; private set; }
 
-        public ScriptableObjectInstanceBinding<TBase, TSpecific> Update(ProxyBinding<TBase> proxy)
+        public ScriptableObjectInstanceBinding<TBase, TSpecific> Update(InjectorContext context, IList<ICondition> conditions)
         {
-            Context = proxy.Context;
-            Conditions = proxy.Conditions;
+            Context = context;
+            Conditions = conditions;
             return this;
         }
         
@@ -27,6 +28,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public override void Dispose()
         {
             ObjectPool<ScriptableObjectInstanceBinding<TBase, TSpecific>>.Put(this);
+        }
+        
+        public override IBindable<TBase> Clone()
+        {
+            return ObjectPool<ScriptableObjectInstanceBinding<TBase, TSpecific>>.Get().Update(Context, Conditions);
         }
     }
 }

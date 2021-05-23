@@ -8,7 +8,7 @@ namespace Variecs.ProjectDII.DependencyInjection
 
         public static T Get()
         {
-            return Pool.Count == 0 ? null : Pool.Pop();
+            return Pool.Count == 0 ? new T() : Pool.Pop();
         }
 
         public static void Put(T val)

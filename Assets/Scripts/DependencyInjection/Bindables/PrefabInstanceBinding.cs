@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
@@ -9,12 +10,12 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public InjectorContext Context { get; private set; }
         public Transform Parent { get; private set; }
 
-        public PrefabInstanceBinding<TBase> Update(ProxyBinding<TBase> proxy, TBase prefab, Transform parent = null)
+        public PrefabInstanceBinding<TBase> Update(InjectorContext context, IList<ICondition> conditions, TBase prefab, Transform parent = null)
         {
             Prefab = prefab;
             Parent = parent;
-            Context = proxy.Context;
-            Conditions = proxy.Conditions;
+            Context = context;
+            Conditions = conditions;
             return this;
         }
         
@@ -30,6 +31,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public override void Dispose()
         {
             ObjectPool<PrefabInstanceBinding<TBase>>.Put(this);
+        }
+        
+        public override IBindable<TBase> Clone()
+        {
+            return ObjectPool<PrefabInstanceBinding<TBase>>.Get().Update(Context, Conditions, Prefab, Parent);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Diagnostics;
+using UnityEngine;
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
@@ -7,10 +8,18 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public PrefabInstanceBinding<TBase> ToPrefabInstance(TBase prefab)
         {
             Context.Unbind(this);
-            var binding = ObjectPool<PrefabInstanceBinding<TBase>>.Get().Update(this, prefab);
+            var binding = ObjectPool<PrefabInstanceBinding<TBase>>.Get().Update(Context, Conditions, prefab);
             Context.Bind(binding);
             
             return binding;
+        }
+        
+        public override IBindable<TBase> Clone()
+        {
+            var clone = ObjectPool<ProxyGameObjectBinding<TBase>>.Get();
+            clone.Update(Target, Context);
+            clone.Conditions = Conditions;
+            return clone;
         }
     }
 }

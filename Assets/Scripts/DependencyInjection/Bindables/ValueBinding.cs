@@ -1,31 +1,24 @@
-﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
+﻿using System.Collections.Generic;
+
+namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ValueBinding<TBase>: BaseBinding<TBase> where TBase: class
     {
         public TBase Value { get; private set; }
         public InjectorContext Context { get; private set; }
 
-        private bool valueInjected;
-
-        public ValueBinding<TBase> Update(ProxyBinding<TBase> proxy, TBase value, bool injectManually = false)
+        public ValueBinding<TBase> Update(InjectorContext context, IList<ICondition> conditions, TBase value)
         {
             Value = value;
-            Context = proxy.Context;
-            Conditions = proxy.Conditions;
-            valueInjected = injectManually;
+            Context = context;
+            Conditions = conditions;
             
             return this;
         }
         
         public override TBase Inject()
         {
-            if (valueInjected)
-            {
-                return Value;
-            }
-            
             Context.Inject(Value);
-            valueInjected = true;
 
             return Value;
         }
@@ -33,7 +26,11 @@
         public override void Dispose()
         {
             ObjectPool<ValueBinding<TBase>>.Put(this);
-            valueInjected = false;
+        }
+        
+        public override IBindable<TBase> Clone()
+        {
+            return ObjectPool<ValueBinding<TBase>>.Get().Update(Context, Conditions, Value);
         }
     }
 }

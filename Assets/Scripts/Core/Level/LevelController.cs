@@ -1,10 +1,10 @@
 ﻿using Variecs.ProjectDII.DependencyInjection;
 
-namespace Variecs.ProjectDII.Core
+namespace Variecs.ProjectDII.Core.Level
 {
-    public class TestController: IController
+    public class LevelController: IController
     {
-        [Inject] private TestModel model;
+        [field: Inject] private LevelModel model;
         
         public void Update()
         {
