@@ -7,11 +7,12 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelData : InjectorContext
     {
         [SerializeField] private LevelView viewPrefab;
+        public TileType[] tiles;
         
         [Inject] private IFactory<LevelModel> levelModelFactory;
         [Inject] private IFactory<LevelController, LevelModel> levelControllerFactory;
         [Inject] private IFactory<LevelView, LevelViewFactoryArgs> levelViewFactory;
-
+        
         protected void Awake()
         {
             Inject(this);
@@ -22,10 +23,11 @@ namespace Variecs.ProjectDII.Core.Level
             base.PreInject();
             
             Bind<InjectorContext>().ToValue(this);
-            BaseContext.Bind<LevelData>().ToValue(this);
-            BaseContext.Bind<IFactory<LevelModel>>().ToSingleton<LevelModelFactory>();
-            BaseContext.Bind<IFactory<LevelController, LevelModel>>().ToSingleton<LevelControllerFactory>();
-            BaseContext.Bind<IFactory<LevelView, LevelViewFactoryArgs>>().ToSingleton<LevelViewFactory>();
+            Bind<LevelData>().ToValue(this);
+            Bind<IFactory<LevelModel>>().ToSingleton<LevelModelFactory>();
+            Bind<IFactory<LevelController, LevelModel>>().ToSingleton<LevelControllerFactory>();
+            Bind<IFactory<LevelView, LevelViewFactoryArgs>>().ToSingleton<LevelViewFactory>();
+            Bind<IFactory<ITileModel, TileType>>().ToSingleton<TileFactory>();
             Bind<LevelView>().ToValue(viewPrefab).ForType<LevelViewFactory>();
             Bind<Transform>().ToName("LevelContainer").ForType<LevelViewFactory>();
             MarkAsInjected(viewPrefab);

@@ -29,7 +29,7 @@ namespace Variecs.ProjectDII.DependencyInjection
                 return baseContext;
             }
         }
-
+        
         [SerializeField] private InjectorContext parentContext;
         public InjectorContext ParentContext
         {
@@ -54,7 +54,7 @@ namespace Variecs.ProjectDII.DependencyInjection
 
         private readonly HashSet<object> injectedObjects = new HashSet<object>();
         private bool initialized;
-
+        
         protected virtual void PreInject()
         {
             initialized = true;
