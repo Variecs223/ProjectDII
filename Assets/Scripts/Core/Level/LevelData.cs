@@ -7,13 +7,14 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelData : InjectorContext
     {
         [SerializeField] private LevelView viewPrefab;
+        public Vector2Int size;
         public TileType[] tiles;
         
         [Inject] private IFactory<LevelModel> levelModelFactory;
         [Inject] private IFactory<LevelController, LevelModel> levelControllerFactory;
         [Inject] private IFactory<LevelView, LevelViewFactoryArgs> levelViewFactory;
-        
-        protected void Awake()
+
+        public void Init()
         {
             Inject(this);
         }

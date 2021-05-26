@@ -70,33 +70,13 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             return binding;
         }
 
-        public BaseBinding<TBase> ToName(string name)
+        public NameBinding<TBase> ToName(string name)
         {
-            NameCondition targetCondition = null;
+            Context.Unbind(this);
+            var binding = ObjectPool<NameBinding<TBase>>.Get().Update(Context, Conditions, name);
+            Context.Bind(binding);
             
-            var newBindable = Context.ParentContext.FindBinding<TBase>(bindable =>
-            {
-                if (bindable is BaseBinding<TBase> binding)
-                {
-                    targetCondition = binding.Conditions
-                        .FirstOrDefault(condition =>
-                            condition is NameCondition nameCondition
-                            && nameCondition.Name.Equals(name)) as NameCondition;
-                    return targetCondition != null;
-                }
-
-                return false;
-            });
-
-            if (!(newBindable?.Clone() is BaseBinding<TBase> newBinding))
-            {
-                return null;
-            }
-
-            newBinding.Conditions.Remove(targetCondition);
-            targetCondition.Dispose();
-
-            return newBinding;
+            return binding;
         }
     }
 }

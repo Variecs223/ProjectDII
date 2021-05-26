@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -15,7 +16,8 @@ namespace Variecs.ProjectDII.Core.Level
 
         public TileFactory()
         {
-            
+            concreteFactories.Add(TileType.EmptyTile, new ConcreteTileFactory<EmptyTileModel>());
+            concreteFactories.Add(TileType.Wall, new ConcreteTileFactory<WallModel>());
         }
         
         public ITileModel GetInstance(TileType type)

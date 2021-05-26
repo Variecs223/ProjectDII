@@ -28,7 +28,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             Conditions.Clear();
         }
         
-        public bool CheckConditions(object target, FieldInfo field)
+        public virtual bool CheckConditions(object target, FieldInfo field)
         {
             return Conditions == null || Conditions.All(condition => condition.IsFulfilled(target, field));
         }

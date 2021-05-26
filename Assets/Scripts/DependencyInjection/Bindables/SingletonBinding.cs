@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
