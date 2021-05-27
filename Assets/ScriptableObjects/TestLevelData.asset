@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: TestLevelData
   m_EditorClassIdentifier: 
   parentContext: {fileID: 11400000, guid: f8f0b83a259993e43b27adc44b7894b8, type: 2}
-  viewPrefab: {fileID: 0}
-  tiles: 
+  viewPrefab: {fileID: 134066739442146922, guid: 5c0fffc3dcfe1d642aaa50e4e06249c5, type: 3}
+  fieldSize: {x: 3, y: 3}
+  tiles: 000000000000000000000000000000000100000000000000000000000000000000000000

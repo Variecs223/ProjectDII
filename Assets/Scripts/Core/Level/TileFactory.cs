@@ -5,14 +5,14 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class TileFactory: IFactory<ITileModel, TileType>
+    public class TileFactory: IFactory<BaseTileModel, TileType>
     {
         [Inject] private InjectorContext context;
         
         public bool ManuallyInjected => true;
 
-        private Dictionary<TileType, IFactory<ITileModel>> concreteFactories = new Dictionary<TileType, IFactory<ITileModel>>();
-        public IReadOnlyDictionary<TileType, IFactory<ITileModel>> ConcreteFactories => concreteFactories;
+        private Dictionary<TileType, IFactory<BaseTileModel>> concreteFactories = new Dictionary<TileType, IFactory<BaseTileModel>>();
+        public IReadOnlyDictionary<TileType, IFactory<BaseTileModel>> ConcreteFactories => concreteFactories;
 
         public TileFactory()
         {
@@ -20,7 +20,7 @@ namespace Variecs.ProjectDII.Core.Level
             concreteFactories.Add(TileType.Wall, new ConcreteTileFactory<WallModel>());
         }
         
-        public ITileModel GetInstance(TileType type)
+        public BaseTileModel GetInstance(TileType type)
         {
             if (!concreteFactories.ContainsKey(type))
             {

@@ -6,13 +6,13 @@ namespace Variecs.ProjectDII.Core.Level
     [CreateAssetMenu(fileName = "LevelData", menuName = "DII/Core/Level Data", order = 1)]
     public class LevelData : InjectorContext
     {
-        [SerializeField] private LevelView viewPrefab;
-        public Vector2Int size;
+        [SerializeField] private GameObject viewPrefab;
+        public Vector2Int fieldSize;
         public TileType[] tiles;
         
         [Inject] private IFactory<LevelModel> levelModelFactory;
         [Inject] private IFactory<LevelController, LevelModel> levelControllerFactory;
-        [Inject] private IFactory<LevelView, LevelViewFactoryArgs> levelViewFactory;
+        [Inject] private IFactory<GameObject, LevelViewFactoryArgs> levelViewFactory;
 
         public void Init()
         {
@@ -27,31 +27,25 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<LevelData>().ToValue(this);
             Bind<IFactory<LevelModel>>().ToSingleton<LevelModelFactory>();
             Bind<IFactory<LevelController, LevelModel>>().ToSingleton<LevelControllerFactory>();
-            Bind<IFactory<LevelView, LevelViewFactoryArgs>>().ToSingleton<LevelViewFactory>();
-            Bind<IFactory<ITileModel, TileType>>().ToSingleton<TileFactory>();
-            Bind<LevelView>().ToValue(viewPrefab).ForType<LevelViewFactory>();
+            Bind<IFactory<GameObject, LevelViewFactoryArgs>>().ToSingleton<LevelViewFactory>();
+            Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
+            Bind<GameObject>().ToValue(viewPrefab).ForType<LevelViewFactory>();
             Bind<Transform>().ToName("LevelContainer").ForType<LevelViewFactory>();
             MarkAsInjected(viewPrefab);
         }
 
         public LevelModel GetLevelModel()
         {
-            Inject(this);
-            
             return levelModelFactory.GetInstance();
         }
 
         public LevelController GetLevelController(LevelModel model)
         {
-            Inject(this);
-            
             return levelControllerFactory.GetInstance(model);
         }
 
-        public LevelView GetLevelView(LevelModel model, LevelController controller)
+        public GameObject GetLevelView(LevelModel model, LevelController controller)
         {
-            Inject(this);
-            
             return levelViewFactory.GetInstance(new LevelViewFactoryArgs { Model = model, Controller = controller });
         }
 
@@ -93,14 +87,14 @@ namespace Variecs.ProjectDII.Core.Level
             }
         }
         
-        public class LevelViewFactory : IFactory<LevelView, LevelViewFactoryArgs> 
+        public class LevelViewFactory : IFactory<GameObject, LevelViewFactoryArgs> 
         {
             public bool ManuallyInjected => true;
             [field: Inject] public InjectorContext Context { get; }
-            [field: Inject] public LevelView ViewPrefab { get; }
+            [field: Inject] public GameObject ViewPrefab { get; }
             [field: Inject] public Transform ViewParent { get; }
 
-            public LevelView GetInstance(LevelViewFactoryArgs args)
+            public GameObject GetInstance(LevelViewFactoryArgs args)
             {
                 var view = Instantiate(ViewPrefab, ViewParent);
                 Context.Bind<LevelModel>().ToValue(args.Model).SetTemporary();

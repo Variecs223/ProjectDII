@@ -53,11 +53,12 @@ namespace Variecs.ProjectDII.DependencyInjection
         private readonly Dictionary<Type, List<IBindable<object>>> injections = new Dictionary<Type, List<IBindable<object>>>();
 
         private readonly HashSet<object> injectedObjects = new HashSet<object>();
-        private bool initialized;
+        
+        protected bool Initialized;
         
         protected virtual void PreInject()
         {
-            initialized = true;
+            Initialized = true;
 
             if (ParentContext == null && this != BaseContext)
             {
@@ -68,7 +69,7 @@ namespace Variecs.ProjectDII.DependencyInjection
             {
                 ParentContext.childContexts.Add(this);
 
-                if (!ParentContext.initialized)
+                if (!ParentContext.Initialized)
                 {
                     ParentContext.PreInject();
                 }
@@ -192,7 +193,7 @@ namespace Variecs.ProjectDII.DependencyInjection
         
         public void Inject(object target)
         {
-            if (!initialized)
+            if (!Initialized)
             {
                 PreInject();
             }
@@ -217,6 +218,11 @@ namespace Variecs.ProjectDII.DependencyInjection
                     return;
                 }
             }
+            
+            if (target is IInjectable injectable)
+            {
+                injectable.OnInjected();
+            }
         }
 
         private bool InjectField(object target, FieldInfo field)
@@ -229,11 +235,6 @@ namespace Variecs.ProjectDII.DependencyInjection
                 {
                     field.SetValue(target, injection.Inject());
 
-                    if (target is IInjectable injectable)
-                    {
-                        injectable.OnInjected();
-                    }
-                
                     selectedInjection = injection;
                     break;
                 }
@@ -258,7 +259,7 @@ namespace Variecs.ProjectDII.DependencyInjection
             
             injections.Clear();
             injectedObjects.Clear();
-            initialized = false;
+            Initialized = false;
         }
     }
     

@@ -20,5 +20,10 @@ namespace Variecs.ProjectDII.DependencyInjection
         {
             
         }
+
+        public void Dispose()
+        {
+            context.UnmarkAsInjected(this);
+        }
     }
 }

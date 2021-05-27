@@ -2,7 +2,7 @@
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class ConcreteTileFactory<TModel>: IFactory<TModel> where TModel: class, ITileModel, new()
+    public class ConcreteTileFactory<TModel>: IFactory<TModel> where TModel: BaseTileModel, new()
     {
         public bool ManuallyInjected => false;
         

@@ -1,6 +1,8 @@
-﻿namespace Variecs.ProjectDII.Core
+﻿using System;
+
+namespace Variecs.ProjectDII.Core
 {
-    public interface IController
+    public interface IController: IDisposable
     {
         void Update();
     }

@@ -10,5 +10,10 @@ namespace Variecs.ProjectDII.Core.Level
         {
             
         }
+
+        public void Dispose()
+        {
+            model.Data.UnmarkAsInjected(this);
+        }
     }
 }

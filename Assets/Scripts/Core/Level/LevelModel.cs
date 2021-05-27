@@ -5,18 +5,25 @@ using Variecs.ProjectDII.DependencyInjection;
 namespace Variecs.ProjectDII.Core.Level
 {
     [Serializable]
-    public class LevelModel: IModel
+    public class LevelModel: IModel, IInjectable
     {
-        [field: Inject] public LevelData Data { get; }
-        [Inject] private TileFactory tileFactory;
+        [Inject] [SerializeField] protected LevelData data;
+        [Inject] private IFactory<BaseTileModel, TileType> tileFactory;
 
-        public ITileModel[] Tiles { get; protected set; }
+        [SerializeField] protected BaseTileModel[] tiles;
+        public BaseTileModel[] Tiles => tiles;
 
+        public LevelData Data => data;
         ScriptableObject IModel.ModelType => Data;
+
+        public void OnInjected()
+        {
+            Load();
+        }
 
         public void Load()
         {
-            Tiles = new ITileModel[Data.tiles.Length];
+            tiles = new BaseTileModel[Data.tiles.Length];
 
             for (var i = 0; i < Tiles.Length; i++)
             {
