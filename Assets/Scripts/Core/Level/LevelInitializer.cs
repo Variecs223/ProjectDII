@@ -21,9 +21,13 @@ namespace Variecs.ProjectDII.Core.Level
             layoutView = levelData.GetLevelView(model, controller).GetComponent<LevelLayoutView>();
         }
 
+        protected void Update()
+        {
+            controller.Update();
+        }
+
         protected void OnDestroy()
         {
-            
             controller.Dispose();
             model.Dispose();
             levelData.Dispose();

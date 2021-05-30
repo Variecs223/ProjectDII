@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Variecs.ProjectDII.DependencyInjection;
+using Variecs.ProjectDII.DependencyInjection.Bindables;
+using Variecs.ProjectDII.DependencyInjection.Conditions;
 
 namespace Variecs.ProjectDII.Core.Level
 {
@@ -58,6 +61,7 @@ namespace Variecs.ProjectDII.Core.Level
         {
             tileBuffer?.Dispose();
             model.Data.UnmarkAsInjected(this);
+            model.Data.UnbindGameObject(gameObject);
         }
     }
 }

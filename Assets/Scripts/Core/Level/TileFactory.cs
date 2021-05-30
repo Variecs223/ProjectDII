@@ -16,8 +16,8 @@ namespace Variecs.ProjectDII.Core.Level
 
         public TileFactory()
         {
-            concreteFactories.Add(TileType.EmptyTile, new ConcreteTileFactory<EmptyTileModel>());
-            concreteFactories.Add(TileType.Wall, new ConcreteTileFactory<WallModel>());
+            concreteFactories.Add(TileType.EmptyTile, new ObjectPoolFactory<EmptyTileModel>());
+            concreteFactories.Add(TileType.Wall, new ObjectPoolFactory<WallModel>());
         }
         
         public BaseTileModel GetInstance(TileType type)
@@ -40,7 +40,12 @@ namespace Variecs.ProjectDII.Core.Level
         
         public void Dispose()
         {
+            foreach (var concreteFactory in concreteFactories.Values)
+            {
+                concreteFactory.Dispose();
+            }
             
+            concreteFactories.Clear();
         }
     }
 }

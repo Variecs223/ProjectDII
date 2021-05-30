@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,8 +12,6 @@ namespace Variecs.ProjectDII.DependencyInjection
     [CreateAssetMenu(fileName = "InjectorContext", menuName = "DII/Dependency Injection/Injector Context", order = 0)]
     public class InjectorContext : ScriptableObject, IDisposable
     {
-        private const int InjectionListCapacity = 5;
-        
         private static InjectorContext baseContext;
 
         public static InjectorContext BaseContext
@@ -53,6 +50,8 @@ namespace Variecs.ProjectDII.DependencyInjection
         private readonly Dictionary<Type, List<IBindable<object>>> injections = new Dictionary<Type, List<IBindable<object>>>();
 
         private readonly HashSet<object> injectedObjects = new HashSet<object>();
+        private readonly Dictionary<object, IList<IBindable<object>>> objectBindings = new Dictionary<object, IList<IBindable<object>>>();
+        private readonly Dictionary<GameObject, IList<IBindable<object>>> gameObjectBindings = new Dictionary<GameObject, IList<IBindable<object>>>();
         
         protected bool Initialized;
         
@@ -76,10 +75,83 @@ namespace Variecs.ProjectDII.DependencyInjection
             }
         }
         
+        public void RegisterObjectBinding(object target, IBindable<object> bindable)
+        {
+            if (!objectBindings.ContainsKey(target))
+            {
+                objectBindings[target] = ObjectPool<List<IBindable<object>>>.Get();
+            }
+
+            objectBindings[target].Add(bindable);
+        }
+
+        public void RegisterGameObjectBinding(GameObject target, IBindable<object> bindable)
+        {
+            if (!gameObjectBindings.ContainsKey(target))
+            {
+                gameObjectBindings[target] = ObjectPool<List<IBindable<object>>>.Get();
+            }
+
+            gameObjectBindings[target].Add(bindable);
+        }
+        
+        public void UnregisterObjectBinding(object target, IBindable<object> bindable)
+        {
+            if (objectBindings.ContainsKey(target) && objectBindings[target].Contains(bindable))
+            {
+                objectBindings[target].Remove(bindable);
+            }
+        }
+
+        public void UnregisterGameObjectBinding(GameObject target, IBindable<object> bindable)
+        {
+            if (gameObjectBindings.ContainsKey(target) && gameObjectBindings[target].Contains(bindable))
+            {
+                gameObjectBindings[target].Remove(bindable);
+            }
+        }
+
+        public void UnbindObject(object target)
+        {
+            if (!objectBindings.ContainsKey(target))
+            {
+                return;
+            }
+
+            var tempList = ObjectPool<List<IBindable<object>>>.Get();
+            tempList.AddRange(objectBindings[target]);
+
+            foreach (var bindable in tempList)
+            {
+                Unbind(bindable);
+            }
+            
+            tempList.Clear();
+            ObjectPool<List<IBindable<object>>>.Put(tempList);
+        }
+
+        public void UnbindGameObject(GameObject target)
+        {
+            if (!gameObjectBindings.ContainsKey(target))
+            {
+                return;
+            }
+            
+            var tempList = ObjectPool<List<IBindable<object>>>.Get();
+            tempList.AddRange(gameObjectBindings[target]);
+
+            foreach (var bindable in gameObjectBindings[target])
+            {
+                Unbind(bindable);
+            }
+            
+            tempList.Clear();
+            ObjectPool<List<IBindable<object>>>.Put(tempList);
+        }
+        
         public ProxyBinding<T> Bind<T>() where T: class
         {
-            var type = typeof(T);
-            var binding = ObjectPool<ProxyBinding<T>>.Get().Update(type, this);
+            var binding = ObjectPool<ProxyBinding<T>>.Get().Update(this);
             
             Bind(binding);
 
@@ -88,8 +160,7 @@ namespace Variecs.ProjectDII.DependencyInjection
         
         public ProxyBinding<T> BindGameObject<T>() where T: Object
         {
-            var type = typeof(T);
-            var binding = ObjectPool<ProxyGameObjectBinding<T>>.Get().Update(type, this);
+            var binding = ObjectPool<ProxyGameObjectBinding<T>>.Get().Update(this);
             
             Bind(binding);
 
@@ -98,8 +169,7 @@ namespace Variecs.ProjectDII.DependencyInjection
         
         public ProxyBinding<T> BindScriptableObject<T>() where T: ScriptableObject
         {
-            var type = typeof(T);
-            var binding = ObjectPool<ProxyScriptableObjectBinding<T>>.Get().Update(type, this);
+            var binding = ObjectPool<ProxyScriptableObjectBinding<T>>.Get().Update(this);
             
             Bind(binding);
 
@@ -113,7 +183,7 @@ namespace Variecs.ProjectDII.DependencyInjection
 
             if (!injections.ContainsKey(type))
             {
-                list = injections[type] = new List<IBindable<object>>(InjectionListCapacity);
+                list = injections[type] = ObjectPool<List<IBindable<object>>>.Get();
             }
             else
             {
@@ -126,26 +196,41 @@ namespace Variecs.ProjectDII.DependencyInjection
         public void Unbind<T>() where T : class
         {
             var type = typeof(T);
-
+            
             if (!injections.ContainsKey(type))
             {
                 return;
             }
             
             var list = injections[type];
-            list.ForEach(binding => binding.Dispose());
+
+            foreach (var binding in list)
+            {
+                binding.Dispose();
+            }
+
             list.Clear();
+            ObjectPool<List<IBindable<object>>>.Put(list);
+            injections.Remove(type);
         }
-        
-        public void Unbind<T>([NotNull] IBindable<T> binding) where T: class
+
+        public void Unbind([NotNull] IBindable<object> binding)
         {
-            var type = typeof(T);
+            var type = binding.GetBindedType();
             List<IBindable<object>> list;
             
             if (injections.ContainsKey(type) && (list = injections[type]).Contains(binding))
             {
                 list.Remove(binding);
                 binding.Dispose();
+
+                if (list.Any())
+                {
+                    return;
+                }
+                
+                ObjectPool<List<IBindable<object>>>.Put(list);
+                injections.Remove(type);
             }
             else
             {
@@ -184,11 +269,6 @@ namespace Variecs.ProjectDII.DependencyInjection
         public void UnmarkAsInjected(object target)
         {
             injectedObjects.Remove(target);
-        }
-
-        public void RemoveTemporaryBindings<T>()
-        {
-            injections[typeof(T)].RemoveAll(inj => inj.Temporary);
         }
         
         public void Inject(object target)

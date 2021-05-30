@@ -7,8 +7,6 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         where TBase: ScriptableObject 
         where TSpecific: TBase
     {
-        public InjectorContext Context { get; private set; }
-
         public ScriptableObjectInstanceBinding<TBase, TSpecific> Update(InjectorContext context, IList<ICondition> conditions)
         {
             Context = context;
@@ -27,6 +25,9 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public override void Dispose()
         {
+            base.Dispose();
+
+            Context = null;
             ObjectPool<ScriptableObjectInstanceBinding<TBase, TSpecific>>.Put(this);
         }
         

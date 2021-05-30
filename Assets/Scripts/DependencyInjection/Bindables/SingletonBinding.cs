@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
@@ -8,8 +7,6 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         where TSpecific: TBase, new()
     {
         public static readonly TSpecific Instance = new TSpecific();
-
-        public InjectorContext Context { get; private set; }
 
         public SingletonBinding<TBase, TSpecific> Update(InjectorContext context, IList<ICondition> conditions)
         {
@@ -27,6 +24,9 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public override void Dispose()
         {
+            base.Dispose();
+            
+            Context = null;
             ObjectPool<SingletonBinding<TBase, TSpecific>>.Put(this);
         }
         

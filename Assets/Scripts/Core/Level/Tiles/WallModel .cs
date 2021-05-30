@@ -6,6 +6,8 @@ namespace Variecs.ProjectDII.Core.Level.Tiles
     {
         public override void Dispose()
         {
+            base.Dispose();
+            
             ObjectPool<WallModel>.Put(this);
         }
     }

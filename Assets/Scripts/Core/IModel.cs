@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core
 {
     public interface IModel: IDisposable
     {
-        ScriptableObject ModelType { get; }
+        InjectorContext ModelType { get; }
     }
 }

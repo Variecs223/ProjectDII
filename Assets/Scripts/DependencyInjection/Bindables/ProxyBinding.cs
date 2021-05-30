@@ -6,12 +6,8 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ProxyBinding<TBase>: BaseBinding<TBase> where TBase: class
     {
-        public Type Target { get; private set; }
-        public InjectorContext Context { get; private set; }
-
-        public ProxyBinding<TBase> Update(Type newTarget, InjectorContext newContext)
+        public ProxyBinding<TBase> Update(InjectorContext newContext)
         {
-            Target = newTarget;
             Context = newContext;
             
             return this;
@@ -24,12 +20,15 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public override void Dispose()
         {
+            base.Dispose();
+
+            Context = null;
             ObjectPool<ProxyBinding<TBase>>.Put(this);
         }
         
         public override IBindable<TBase> Clone()
         {
-            var clone = ObjectPool<ProxyBinding<TBase>>.Get().Update(Target, Context);
+            var clone = ObjectPool<ProxyBinding<TBase>>.Get().Update(Context);
             clone.Conditions = Conditions;
             return clone;
         }

@@ -14,7 +14,7 @@ namespace Variecs.ProjectDII.Core.Level
         public BaseTileModel[] Tiles => tiles;
 
         public LevelData Data => data;
-        ScriptableObject IModel.ModelType => Data;
+        InjectorContext IModel.ModelType => Data;
 
         public void OnInjected()
         {

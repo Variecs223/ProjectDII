@@ -20,6 +20,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Conditions
 
         public void Dispose()
         {
+            Predicate = null;
             ObjectPool<PredicateCondition>.Put(this);
         }
     }

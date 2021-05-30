@@ -1,8 +1,6 @@
-﻿using Variecs.ProjectDII.DependencyInjection;
-
-namespace Variecs.ProjectDII.Core.Level
+﻿namespace Variecs.ProjectDII.DependencyInjection
 {
-    public class ConcreteTileFactory<TModel>: IFactory<TModel> where TModel: BaseTileModel, new()
+    public class ObjectPoolFactory<TModel>: IFactory<TModel> where TModel: class, new()
     {
         public bool ManuallyInjected => false;
         

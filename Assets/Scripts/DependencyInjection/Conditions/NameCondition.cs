@@ -21,6 +21,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Conditions
 
         public void Dispose()
         {
+            Name = null;
             ObjectPool<NameCondition>.Put(this);
         }
     }

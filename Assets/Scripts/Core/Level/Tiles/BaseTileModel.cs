@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Objects;
 
 namespace Variecs.ProjectDII.Core.Level
 {
@@ -14,12 +15,12 @@ namespace Variecs.ProjectDII.Core.Level
             public TransitionState State;
         }
 
-        public List<ObjectTransitionState> objects;
+        public List<ObjectTransitionState> objects = new List<ObjectTransitionState>();
         public string test;
 
         public virtual void Dispose()
         {
-            
+            objects.Clear();
         }
     }
 }

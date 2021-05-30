@@ -7,7 +7,6 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         where TBase: Object 
     {
         public TBase Prefab { get; private set; }
-        public InjectorContext Context { get; private set; }
         public Transform Parent { get; private set; }
 
         public PrefabInstanceBinding<TBase> Update(InjectorContext context, IList<ICondition> conditions, TBase prefab, Transform parent = null)
@@ -30,6 +29,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public override void Dispose()
         {
+            base.Dispose();
+
+            Context = null;
+            Prefab = null;
+            Parent = null;
             ObjectPool<PrefabInstanceBinding<TBase>>.Put(this);
         }
         

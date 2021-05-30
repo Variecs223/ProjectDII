@@ -5,7 +5,6 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
     public class ValueBinding<TBase>: BaseBinding<TBase> where TBase: class
     {
         public TBase Value { get; private set; }
-        public InjectorContext Context { get; private set; }
 
         public ValueBinding<TBase> Update(InjectorContext context, IList<ICondition> conditions, TBase value)
         {
@@ -25,6 +24,10 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public override void Dispose()
         {
+            base.Dispose();
+            
+            Value = null;
+            Context = null;
             ObjectPool<ValueBinding<TBase>>.Put(this);
         }
         

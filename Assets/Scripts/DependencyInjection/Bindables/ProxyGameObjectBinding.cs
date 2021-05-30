@@ -17,7 +17,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         public override IBindable<TBase> Clone()
         {
             var clone = ObjectPool<ProxyGameObjectBinding<TBase>>.Get();
-            clone.Update(Target, Context);
+            clone.Update(Context);
             clone.Conditions = Conditions;
             return clone;
         }

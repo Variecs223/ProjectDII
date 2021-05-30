@@ -8,7 +8,6 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
     public class NameBinding<TBase>: BaseBinding<TBase> where TBase: class
     {
         public string Name { get; private set; }
-        public InjectorContext Context { get; private set; }
 
         private BaseBinding<TBase> currentBinding;
         
@@ -78,6 +77,10 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public override void Dispose()
         {
+            base.Dispose();
+
+            Context = null;
+            Name = null;
             ObjectPool<NameBinding<TBase>>.Put(this);
         }
         
