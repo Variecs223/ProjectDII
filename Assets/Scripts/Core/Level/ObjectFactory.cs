@@ -1,30 +1,30 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Variecs.ProjectDII.Core.Level.Tiles;
+using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class TileFactory: IFactory<BaseTileModel, TileType>
+    public class ObjectFactory: IFactory<IObjectPackage, ObjectType>
     {
         [Inject] private InjectorContext context;
+        [Inject] private BoxData boxData;
+
+        private readonly Dictionary<ObjectType, IFactory<IObjectPackage>> concreteFactories = new Dictionary<ObjectType, IFactory<IObjectPackage>>();
+        public IReadOnlyDictionary<ObjectType, IFactory<IObjectPackage>> ConcreteFactories => concreteFactories;
         
+        public ObjectFactory()
+        {
+            concreteFactories.Add(ObjectType.Box, boxData);
+        }
+
         public bool ManuallyInjected => true;
 
-        private readonly Dictionary<TileType, IFactory<BaseTileModel>> concreteFactories = new Dictionary<TileType, IFactory<BaseTileModel>>();
-        public IReadOnlyDictionary<TileType, IFactory<BaseTileModel>> ConcreteFactories => concreteFactories;
-
-        public TileFactory()
-        {
-            concreteFactories.Add(TileType.EmptyTile, new ObjectPoolFactory<EmptyTileModel>());
-            concreteFactories.Add(TileType.Wall, new ObjectPoolFactory<WallModel>());
-        }
-        
-        public BaseTileModel GetInstance(TileType type)
+        public IObjectPackage GetInstance(ObjectType type)
         {
             if (!concreteFactories.ContainsKey(type))
             {
-                Debug.LogError($"No factory found for tile type {type}");
+                Debug.LogError($"No factory found for object type {type}");
                 return null;
             }
 

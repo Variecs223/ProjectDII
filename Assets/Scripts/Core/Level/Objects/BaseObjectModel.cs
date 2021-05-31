@@ -13,24 +13,5 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         {
             
         }
-
-        public class Factory : IFactory<BaseObjectModel>
-        {
-            public bool ManuallyInjected => true;
-
-            [Inject] private InjectorContext injectorContext;
-            
-            public BaseObjectModel GetInstance()
-            {
-                var model = CreateInstance<BaseObjectModel>();
-                injectorContext.Inject(model);
-                return model;
-            }
-            
-            public void Dispose()
-            {
-                
-            }
-        }
     }
 }

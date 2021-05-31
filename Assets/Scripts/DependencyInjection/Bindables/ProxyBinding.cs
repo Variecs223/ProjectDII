@@ -35,45 +35,55 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public ValueBinding<TBase> ToValue(TBase value)
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<ValueBinding<TBase>>.Get().Update(Context, Conditions, value);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<ValueBinding<TBase>>.Get().Update(context, Conditions, value);
+            context.Bind(binding);
             
             return binding;
         }
 
         public SingletonBinding<TBase, TSpecific> ToSingleton<TSpecific>() where TSpecific : TBase, new()
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<SingletonBinding<TBase, TSpecific>>.Get().Update(Context, Conditions);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<SingletonBinding<TBase, TSpecific>>.Get().Update(context, Conditions);
+            context.Bind(binding);
             
             return binding;
         }
 
         public ObjectInstanceBinding<TBase, TSpecific> ToObjectInstance<TSpecific>() where TSpecific : TBase, new()
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<ObjectInstanceBinding<TBase, TSpecific>>.Get().Update(Context, Conditions);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<ObjectInstanceBinding<TBase, TSpecific>>.Get().Update(context, Conditions);
+            context.Bind(binding);
             
             return binding;
         }
 
         public FactoryBinding<TBase> ToFactory(IFactory<TBase> factory)
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<FactoryBinding<TBase>>.Get().Update(Context, Conditions, factory);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<FactoryBinding<TBase>>.Get().Update(context, Conditions, factory);
+            context.Bind(binding);
             
             return binding;
         }
 
         public NameBinding<TBase> ToName(string name)
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<NameBinding<TBase>>.Get().Update(Context, Conditions, name);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<NameBinding<TBase>>.Get().Update(context, Conditions, name);
+            context.Bind(binding);
             
             return binding;
         }

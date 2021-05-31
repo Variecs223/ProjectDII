@@ -1,22 +1,24 @@
-﻿using System.Linq;
+﻿using System;
 using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
-using Variecs.ProjectDII.DependencyInjection.Bindables;
-using Variecs.ProjectDII.DependencyInjection.Conditions;
 
 namespace Variecs.ProjectDII.Core.Level
 {
     [CreateAssetMenu(fileName = "LevelData", menuName = "DII/Core/Level Data", order = 1)]
     public class LevelData : InjectorContext
     {
+        [Serializable]
+        public struct ObjectLocation
+        {
+            public ObjectType Type;
+            public Vector2Int Coords;
+        }
+        
         [SerializeField] private GameObject viewPrefab;
         [Inject(Name="LevelContainer")] [SerializeField] private Transform viewContainer;
         public Vector2Int fieldSize;
         public TileType[] tiles;
-        public void Init()
-        {
-            Inject(this);
-        }
+        public ObjectLocation[] objects;
         
         protected override void PreInject()
         {
@@ -25,6 +27,7 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<InjectorContext>().ToValue(this);
             Bind<LevelData>().ToValue(this);
             Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
+            Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
         }
 
         public LevelModel GetLevelModel()

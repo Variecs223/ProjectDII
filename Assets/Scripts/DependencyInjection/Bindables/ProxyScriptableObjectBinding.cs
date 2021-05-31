@@ -6,9 +6,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
     {
         public ScriptableObjectInstanceBinding<TBase, TSpecific> ToScriptableObjectInstance<TSpecific>() where TSpecific: TBase
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<ScriptableObjectInstanceBinding<TBase, TSpecific>>.Get().Update(Context, Conditions);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<ScriptableObjectInstanceBinding<TBase, TSpecific>>.Get().Update(context, Conditions);
+            context.Bind(binding);
             
             return binding;
         }

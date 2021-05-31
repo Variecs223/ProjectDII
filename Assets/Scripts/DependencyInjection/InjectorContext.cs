@@ -54,6 +54,11 @@ namespace Variecs.ProjectDII.DependencyInjection
         private readonly Dictionary<GameObject, IList<IBindable<object>>> gameObjectBindings = new Dictionary<GameObject, IList<IBindable<object>>>();
         
         protected bool Initialized;
+
+        public void Init()
+        {
+            Inject(this);
+        }
         
         protected virtual void PreInject()
         {
@@ -232,10 +237,6 @@ namespace Variecs.ProjectDII.DependencyInjection
                 ObjectPool<List<IBindable<object>>>.Put(list);
                 injections.Remove(type);
             }
-            else
-            {
-                Debug.LogError("No binding found");
-            }
         }
 
         public IBindable<T> FindBinding<T>(Predicate<IBindable<T>> predicate) where T: class
@@ -319,8 +320,15 @@ namespace Variecs.ProjectDII.DependencyInjection
                     break;
                 }
             }
+
+            var result = selectedInjection != null;
             
-            if (selectedInjection != null || field.GetCustomAttribute<InjectAttribute>().Optional)
+            if (!result && ParentContext != null)
+            {
+                result = ParentContext.InjectField(target, field);
+            }
+            
+            if (result || field.GetCustomAttribute<InjectAttribute>().Optional)
             {
                 return true;
             }

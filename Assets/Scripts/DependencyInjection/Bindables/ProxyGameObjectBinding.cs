@@ -7,9 +7,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
     {
         public PrefabInstanceBinding<TBase> ToPrefabInstance(TBase prefab)
         {
-            Context.Unbind(this);
-            var binding = ObjectPool<PrefabInstanceBinding<TBase>>.Get().Update(Context, Conditions, prefab);
-            Context.Bind(binding);
+            var context = Context;
+            
+            context.Unbind(this);
+            var binding = ObjectPool<PrefabInstanceBinding<TBase>>.Get().Update(context, Conditions, prefab);
+            context.Bind(binding);
             
             return binding;
         }
