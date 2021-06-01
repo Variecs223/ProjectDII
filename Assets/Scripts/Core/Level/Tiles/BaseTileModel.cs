@@ -18,6 +18,11 @@ namespace Variecs.ProjectDII.Core.Level
         public List<ObjectTransitionState> objects = new List<ObjectTransitionState>();
         public string test;
 
+        public virtual bool AllowObject(ObjectType type)
+        {
+            return true;
+        }
+        
         public virtual void Dispose()
         {
             objects.Clear();

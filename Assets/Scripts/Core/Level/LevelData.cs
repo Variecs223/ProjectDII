@@ -28,6 +28,7 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<LevelData>().ToValue(this);
             Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
             Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
+            Bind<ObjectFactory>().ToSingleton<ObjectFactory>();
         }
 
         public LevelModel GetLevelModel()

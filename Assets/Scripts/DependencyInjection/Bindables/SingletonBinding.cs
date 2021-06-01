@@ -6,8 +6,6 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         where TBase: class 
         where TSpecific: TBase, new()
     {
-        public static readonly TSpecific Instance = new TSpecific();
-
         public SingletonBinding<TBase, TSpecific> Update(InjectorContext context, IList<ICondition> conditions)
         {
             Context = context;
@@ -17,9 +15,11 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
         
         public override TBase Inject()
         {
-            Context.Inject(Instance);
+            var instance = SingletonHolder.Get<TSpecific>();
             
-            return Instance;
+            Context.Inject(instance);
+            
+            return instance;
         }
 
         public override void Dispose()

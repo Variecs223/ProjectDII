@@ -6,12 +6,15 @@ using Variecs.ProjectDII.DependencyInjection;
 namespace Variecs.ProjectDII.Core.Level
 {
     public class LevelLayoutView : MonoBehaviour, IInjectable
-    { 
+    {
+        public const string ObjectContainerName = "ObjectContainer";
+        
         [Inject] [SerializeField] private LevelModel model;
         [Inject] private LevelController controller;
+        [Inject] private ObjectFactory objectFactory;
 
         [SerializeField] private RawImage levelDisplay;
-        [SerializeField] private Transform objectContainer;
+        [SerializeField] private RectTransform objectContainer;
         [SerializeField] private Vector2Int textureSize;
         [SerializeField] private Vector2 tileSize;
         [Space]
@@ -40,14 +43,24 @@ namespace Variecs.ProjectDII.Core.Level
             levelDisplay.material.SetInt(fieldSizeYParamName, model.Data.fieldSize.y);
             levelDisplay.material.SetBuffer(tileBufferParamName, tileBuffer);
 
-            InjectorContext.BaseContext.Bind<Transform>().ToValue(objectContainer).ForName("ObjectContainer");
-
             model.OnObjectAdded += AddViews;
         }
 
         protected void AddViews(IObjectPackage package)
         {
-            package.AddViews(view => objectViews.Add(view));
+            package.GetViews(view =>
+            {
+                var rectTransform = view.GetComponent<RectTransform>();
+                
+                objectViews.Add(view);
+                
+                package.GetModels(objectModel =>
+                {
+                    var uvCoords = objectModel.coords / model.Data.fieldSize;
+                    rectTransform.anchorMin = uvCoords;
+                    rectTransform.anchorMax = uvCoords;
+                });
+            }, objectContainer);
         }
 
         protected void Start()
@@ -68,12 +81,17 @@ namespace Variecs.ProjectDII.Core.Level
         public void Dispose()
         {
             tileBuffer?.Dispose();
-            model.Data.UnmarkAsInjected(this);
-            model.Data.UnbindGameObject(gameObject);
 
-            
-            
-            model.OnObjectAdded -= AddViews;
+            if (model != null)
+            {
+                model.OnObjectAdded -= AddViews;
+
+                if (model.Data != null)
+                {
+                    model.Data.UnmarkAsInjected(this);
+                    model.Data.UnbindGameObject(gameObject);
+                }
+            }
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using Variecs.ProjectDII.DependencyInjection.Conditions;
-
-namespace Variecs.ProjectDII.DependencyInjection.Bindables
+﻿namespace Variecs.ProjectDII.DependencyInjection.Bindables
 {
     public class ProxyBinding<TBase>: BaseBinding<TBase> where TBase: class
     {

@@ -21,7 +21,7 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void OnInjected()
         {
-            Load();
+            
         }
 
         public void Load()
@@ -35,25 +35,34 @@ namespace Variecs.ProjectDII.Core.Level
 
             foreach (var objectLocation in Data.objects)
             {
-                var package = objectFactory.GetInstance(objectLocation.Type);
-
-                package?.AddModels(model =>
-                {
-                    Tiles[objectLocation.Coords.y * Data.fieldSize.x + objectLocation.Coords.x].objects.Add(
-                        new BaseTileModel.ObjectTransitionState
-                        {
-                            Object = model,
-                            State = TransitionState.Stationary
-                        });
-                });
-                
-                OnObjectAdded?.Invoke(package);
+                AddObject(objectLocation.Type, objectLocation.Coords);
             }
+        }
+
+        public void AddObject(ObjectType type, Vector2Int coords)
+        {
+            using var package = objectFactory.GetInstance(type);
+                
+            package.GetModels(model =>
+            {
+                model.coords = coords + Vector2.one * 0.5f;
+                Tiles[coords.y * Data.fieldSize.x + coords.x].objects.Add(
+                    new BaseTileModel.ObjectTransitionState
+                    {
+                        Object = model,
+                        State = TransitionState.Stationary
+                    });
+            });
+                
+            OnObjectAdded?.Invoke(package);
         }
         
         public void Dispose()
         {
-            Data.UnmarkAsInjected(this);
+            if (Data != null)
+            {
+                Data.UnmarkAsInjected(this);
+            }
         }
     }
 }

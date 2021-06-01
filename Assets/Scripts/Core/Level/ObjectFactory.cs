@@ -5,15 +5,15 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class ObjectFactory: IFactory<IObjectPackage, ObjectType>
+    public class ObjectFactory: IFactory<IObjectPackage, ObjectType>, IInjectable
     {
         [Inject] private InjectorContext context;
         [Inject] private BoxData boxData;
-
+        
         private readonly Dictionary<ObjectType, IFactory<IObjectPackage>> concreteFactories = new Dictionary<ObjectType, IFactory<IObjectPackage>>();
         public IReadOnlyDictionary<ObjectType, IFactory<IObjectPackage>> ConcreteFactories => concreteFactories;
         
-        public ObjectFactory()
+        public void OnInjected()
         {
             concreteFactories.Add(ObjectType.Box, boxData);
         }
@@ -28,14 +28,14 @@ namespace Variecs.ProjectDII.Core.Level
                 return null;
             }
 
-            var tile = concreteFactories[type].GetInstance();
+            var package = concreteFactories[type].GetInstance();
             
             if (!concreteFactories[type].ManuallyInjected)
             {
                 context.Inject(type);
             }
 
-            return tile;
+            return package;
         }
         
         public void Dispose()
@@ -44,7 +44,7 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 concreteFactory.Dispose();
             }
-            
+
             concreteFactories.Clear();
         }
     }

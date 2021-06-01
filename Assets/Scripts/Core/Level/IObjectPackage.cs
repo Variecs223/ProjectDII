@@ -6,8 +6,8 @@ namespace Variecs.ProjectDII.Core.Level
 {
     public interface IObjectPackage: IDisposable
     {
-        void AddModels(Action<BaseObjectModel> modelAddition);
-        void AddControllers(Action<IController> controllerAddition);
-        void AddViews(Action<GameObject> viewAddition);
+        void GetModels(Action<BaseObjectModel> modelAddition);
+        void GetControllers(Action<IController> controllerAddition);
+        void GetViews(Action<GameObject> viewAddition, Transform parent = null);
     }
 }

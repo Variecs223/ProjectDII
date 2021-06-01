@@ -4,22 +4,18 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.Objects
 {
+    [CreateAssetMenu(fileName = "BoxData", menuName = "DII/Core/Objects/Box", order = 0)]
     public class BoxData : InjectorContext, IFactory<BoxData.BoxPackage>
     {
         [SerializeField] private GameObject boxPrefab;
 
-        protected void Awake()
-        {
-            Init();
-        }
-        
         protected override void PreInject()
         {
             base.PreInject();
 
             Bind<InjectorContext>().ToValue(this);
+            BaseContext.Bind<BoxData>().ToValue(this);
             Bind<GameObject>().ToValue(boxPrefab).ForType<BoxPackage>();
-            Bind<Transform>().ToName("ObjectContainer").ForType<BoxPackage>();
             MarkAsInjected(boxPrefab);
         }
 
@@ -43,13 +39,12 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         {
             [Inject] private BoxData boxData;
             [Inject] private GameObject viewPrefab;
-            [Inject(Optional=true)] private Transform viewContainer;
             
             private BaseObjectModel baseObjectModel;
             private PushableController pushableController;
             private GameObject view;
             
-            public void AddModels(Action<BaseObjectModel> modelAddition = null)
+            public void GetModels(Action<BaseObjectModel> modelAddition = null)
             {
                 if (baseObjectModel == null)
                 {
@@ -60,11 +55,11 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 modelAddition?.Invoke(baseObjectModel);
             }
 
-            public void AddControllers(Action<IController> controllerAddition = null)
+            public void GetControllers(Action<IController> controllerAddition = null)
             {
                 if (baseObjectModel == null)
                 {
-                    AddModels();
+                    GetModels();
                 }
 
                 if (pushableController == null)
@@ -77,16 +72,16 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 controllerAddition?.Invoke(pushableController);
             }
 
-            public void AddViews(Action<GameObject> viewAddition = null)
+            public void GetViews(Action<GameObject> viewAddition = null, Transform viewContainer = null)
             {
                 if (baseObjectModel == null)
                 {
-                    AddModels();
+                    GetModels();
                 }
 
                 if (pushableController == null)
                 {
-                    AddControllers();
+                    GetControllers();
                 }
 
                 if (view == null)
@@ -94,7 +89,11 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                     view = Instantiate(viewPrefab, viewContainer);
                     boxData.Bind<BaseObjectModel>().ToValue(baseObjectModel).ForGameObject(view);
                     boxData.Bind<PushableController>().ToValue(pushableController).ForGameObject(view);
-                    boxData.Inject(view);
+
+                    foreach (var injectable in view.GetComponentsInChildren<IInjectable>())
+                    {
+                        boxData.Inject(injectable);
+                    }
                 }
                 
                 viewAddition?.Invoke(view);
@@ -106,7 +105,6 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 
                 boxData = null;
                 viewPrefab = null;
-                viewContainer = null;
                 baseObjectModel = null;
                 pushableController = null;
                 view = null;

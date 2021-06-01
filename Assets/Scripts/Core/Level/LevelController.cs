@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -6,6 +7,7 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelController: IController, IInjectable
     {
         [field: Inject] private LevelModel model;
+        [Inject] private ObjectFactory objectFactory;
 
         protected readonly List<IController> ObjectControllers = new List<IController>();
 
@@ -16,7 +18,15 @@ namespace Variecs.ProjectDII.Core.Level
 
         protected void AddController(IObjectPackage package)
         {
-            package.AddControllers(controller => ObjectControllers.Add(controller));
+            package.GetControllers(controller => ObjectControllers.Add(controller));
+        }
+
+        public void OnTileClick(Vector2Int coords)
+        {
+            if (model.Tiles[coords.y * model.Data.fieldSize.x + coords.x].AllowObject(ObjectType.Box))
+            {
+                model.AddObject(ObjectType.Box, coords);
+            }
         }
 
         public void Update()
@@ -29,8 +39,16 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void Dispose()
         {
-            model.Data.UnmarkAsInjected(this);
-            model.Data.UnbindObject(this);
+            if (model != null)
+            {
+                model.OnObjectAdded -= AddController;
+                
+                if (model.Data != null)
+                {
+                    model.Data.UnmarkAsInjected(this);
+                    model.Data.UnbindObject(this);
+                }
+            }
 
             foreach (var controller in ObjectControllers)
             {
@@ -39,7 +57,6 @@ namespace Variecs.ProjectDII.Core.Level
 
             ObjectControllers.Clear();
             
-            model.OnObjectAdded -= AddController;
         }
     }
 }

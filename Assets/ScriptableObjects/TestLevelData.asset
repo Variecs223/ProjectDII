@@ -17,3 +17,8 @@ MonoBehaviour:
   viewContainer: {fileID: 0}
   fieldSize: {x: 3, y: 3}
   tiles: 000000000000000000000000000000000100000000000000000000000000000000000000
+  objects:
+  - Type: 0
+    Coords: {x: 0, y: 0}
+  - Type: 0
+    Coords: {x: 1, y: 2}
