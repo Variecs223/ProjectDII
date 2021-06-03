@@ -5,12 +5,17 @@ namespace Variecs.ProjectDII.Core.Level.Objects
 {
     public class BaseObjectModel: ScriptableObject, IModel
     {
-        [Inject] public InjectorContext Data;
+        [Inject] public BaseObjectData Data;
         
         InjectorContext IModel.ModelType => Data;
 
         public Vector2 coords;
 
+        public virtual bool AllowObject(ObjectType other)
+        {
+            return true;
+        }
+        
         public virtual void Dispose()
         {
             

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 using Variecs.ProjectDII.Core.Level.Objects;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -20,7 +20,7 @@ namespace Variecs.ProjectDII.Core.Level
 
         public virtual bool AllowObject(ObjectType type)
         {
-            return true;
+            return objects.All(obj => obj.Object.AllowObject(type));
         }
         
         public virtual void Dispose()
