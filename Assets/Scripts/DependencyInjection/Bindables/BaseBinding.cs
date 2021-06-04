@@ -14,7 +14,7 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
 
         public abstract TBase Inject();
         public abstract IBindable<TBase> Clone();
-
+        
         public Type GetBindedType()
         {
             return typeof(TBase);
@@ -73,6 +73,13 @@ namespace Variecs.ProjectDII.DependencyInjection.Bindables
             Conditions ??= new List<ICondition>();
             Conditions.Add(ObjectPool<PredicateCondition>.Get().Update(predicate));
             return this;
-        }   
+        }
+
+        public BaseBinding<TBase> ForList()
+        {
+            Conditions ??= new List<ICondition>();
+            Conditions.Add(ObjectPool<ListCondition>.Get());
+            return this;
+        }
     }
 }

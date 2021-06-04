@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -183,7 +184,11 @@ namespace Variecs.ProjectDII.DependencyInjection
 
         public void Bind<T>([NotNull] IBindable<T> binding) where T : class
         {
-            var type = typeof(T);
+            Bind(typeof(T), binding);
+        }
+        
+        public void Bind(Type type, [NotNull] IBindable<object> binding)
+        {
             List<IBindable<object>> list;
 
             if (!injections.ContainsKey(type))
@@ -300,6 +305,14 @@ namespace Variecs.ProjectDII.DependencyInjection
                 }
             }
             
+            foreach (var field in fields.Where(f => f.GetCustomAttributes<InjectListAttribute>().Any()))
+            {
+                if (!InjectListField(target, field))
+                {
+                    return;
+                }
+            }
+            
             if (target is IInjectable injectable)
             {
                 injectable.OnInjected();
@@ -308,33 +321,58 @@ namespace Variecs.ProjectDII.DependencyInjection
 
         private bool InjectField(object target, FieldInfo field)
         {
-            IBindable<object> selectedInjection = null;
+            var result = false;
 
             if (injections.ContainsKey(field.FieldType))
             {
                 foreach (var injection in injections[field.FieldType].Where(injection => injection.CheckConditions(target, field)))
                 {
                     field.SetValue(target, injection.Inject());
-
-                    selectedInjection = injection;
+                    result = true;
                     break;
                 }
             }
-
-            var result = selectedInjection != null;
             
             if (!result && ParentContext != null)
             {
                 result = ParentContext.InjectField(target, field);
             }
             
-            if (result || field.GetCustomAttribute<InjectAttribute>().Optional)
+            if (result || (field.GetCustomAttribute<InjectAttribute>()?.Optional ?? false))
             {
                 return true;
             }
             
             Debug.LogError($"No bindings found for type {field.FieldType} when injecting into mandatory field {field.Name} of object {target}");
             return false;
+        }
+        
+        private bool InjectListField(object target, FieldInfo field)
+        {
+            if (!((field.GetValue(target) ?? Activator.CreateInstance(field.FieldType)) is IList list))
+            {
+                Debug.LogError($"Target type {field.FieldType} doesn't implement IList interface. Cannot inject list values in {target}.");
+                return false;
+            }
+            
+            field.SetValue(target, list);
+
+            var subType = field.FieldType.GetGenericArguments()[0];
+            
+            if (injections.ContainsKey(subType))
+            {
+                foreach (var injection in injections[subType].Where(injection => injection.CheckConditions(target, field)))
+                {
+                    list.Add(injection.Inject());
+                }
+            }
+            
+            if (ParentContext != null)
+            {
+                ParentContext.InjectListField(target, field);
+            }
+
+            return true;
         }
         
         public virtual void Dispose() 

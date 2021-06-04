@@ -42,7 +42,12 @@ namespace Variecs.ProjectDII.Core.Level
         public void AddObject(ObjectType type, Vector2Int coords)
         {
             using var package = objectFactory.GetInstance(type);
-                
+            
+            AddObject(package, coords);
+        }
+
+        public void AddObject(IObjectPackage package, Vector2Int coords)
+        {
             package.GetModels(model =>
             {
                 model.coords = coords + Vector2.one * 0.5f;

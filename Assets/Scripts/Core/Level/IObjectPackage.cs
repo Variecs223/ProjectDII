@@ -8,6 +8,6 @@ namespace Variecs.ProjectDII.Core.Level
     {
         void GetModels(Action<BaseObjectModel> modelAddition);
         void GetControllers(Action<IController> controllerAddition);
-        void GetViews(Action<GameObject> viewAddition, Transform parent = null);
+        void GetViews(Action<GameObject> viewAddition);
     }
 }

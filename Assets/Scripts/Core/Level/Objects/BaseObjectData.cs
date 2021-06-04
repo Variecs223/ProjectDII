@@ -13,7 +13,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         }
 
         public bool ManuallyInjected => true;
-        public abstract ObjectType ObjectType { get; }
+        public ObjectType objectType;
         public abstract IObjectPackage GetInstance();
 
         public override void Dispose()

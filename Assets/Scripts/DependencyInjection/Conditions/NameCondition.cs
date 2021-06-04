@@ -15,8 +15,10 @@ namespace Variecs.ProjectDII.DependencyInjection.Conditions
         public bool IsFulfilled(object target, FieldInfo fieldInfo)
         {
             var injectAttribute = fieldInfo.GetCustomAttribute<InjectAttribute>();
+            var injectListAttribute = fieldInfo.GetCustomAttribute<InjectListAttribute>();
 
-            return Name.Equals(injectAttribute.Name);
+            return injectAttribute != null && Name.Equals(injectAttribute.Name) 
+                   || injectListAttribute != null && Name.Equals(injectListAttribute.Name);
         }
 
         public void Dispose()

@@ -7,8 +7,6 @@ namespace Variecs.ProjectDII.Core.Level.Objects
     [CreateAssetMenu(fileName = "BoxData", menuName = "DII/Core/Objects/Box", order = 0)]
     public class BoxData : BaseObjectData, IFactory<BoxData.BoxPackage>
     {
-        public override ObjectType ObjectType => ObjectType.Box;
-
         [SerializeField] private GameObject boxPrefab;
 
         protected override void PreInject()
@@ -16,7 +14,9 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             base.PreInject();
 
             BaseContext.Bind<BoxData>().ToValue(this);
+            BaseContext.Bind<BaseObjectData>().ToValue(this).ForList();
             Bind<GameObject>().ToValue(boxPrefab).ForType<BoxPackage>();
+            Bind<Transform>().ToName(LevelLayoutView.ObjectContainerName).ForType<BoxPackage>();
             MarkAsInjected(boxPrefab);
         }
 
@@ -41,6 +41,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         {
             [Inject] private BoxData boxData;
             [Inject] private GameObject viewPrefab;
+            [Inject] private Transform viewContainer;
             
             private BoxModel boxModel;
             private PushableController pushableController;
@@ -74,7 +75,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 controllerAddition?.Invoke(pushableController);
             }
 
-            public void GetViews(Action<GameObject> viewAddition = null, Transform viewContainer = null)
+            public void GetViews(Action<GameObject> viewAddition = null)
             {
                 if (boxModel == null)
                 {
@@ -107,6 +108,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 
                 boxData = null;
                 viewPrefab = null;
+                viewContainer = null;
                 boxModel = null;
                 pushableController = null;
                 view = null;

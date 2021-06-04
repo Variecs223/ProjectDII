@@ -43,6 +43,8 @@ namespace Variecs.ProjectDII.Core.Level
             levelDisplay.material.SetInt(fieldSizeYParamName, model.Data.fieldSize.y);
             levelDisplay.material.SetBuffer(tileBufferParamName, tileBuffer);
 
+            InjectorContext.BaseContext.Bind<Transform>().ToValue(objectContainer).ForName(ObjectContainerName);
+            
             model.OnObjectAdded += AddViews;
         }
 
@@ -60,7 +62,7 @@ namespace Variecs.ProjectDII.Core.Level
                     rectTransform.anchorMin = uvCoords;
                     rectTransform.anchorMax = uvCoords;
                 });
-            }, objectContainer);
+            });
         }
 
         protected void Start()

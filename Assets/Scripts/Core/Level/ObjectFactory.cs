@@ -8,14 +8,17 @@ namespace Variecs.ProjectDII.Core.Level
     public class ObjectFactory: IFactory<IObjectPackage, ObjectType>, IInjectable
     {
         [Inject] private InjectorContext context;
-        [Inject] private BoxData boxData;
+        [InjectList] private List<BaseObjectData> objectDatas;
         
         private readonly Dictionary<ObjectType, IFactory<IObjectPackage>> concreteFactories = new Dictionary<ObjectType, IFactory<IObjectPackage>>();
         public IReadOnlyDictionary<ObjectType, IFactory<IObjectPackage>> ConcreteFactories => concreteFactories;
         
         public void OnInjected()
         {
-            concreteFactories.Add(ObjectType.Box, boxData);
+            foreach (var objectData in objectDatas)
+            {
+                concreteFactories.Add(objectData.objectType, objectData);
+            }
         }
 
         public bool ManuallyInjected => true;
