@@ -30,6 +30,7 @@ namespace Variecs.ProjectDII.Core.Level
             model = levelData.GetLevelModel();
             controller = levelData.GetLevelController(model);
             layoutView = levelData.GetLevelView(model, controller).GetComponent<LevelLayoutView>();
+            InjectorContext.BaseContext.Bind<LevelModel>().ToValue(model);
             model.Load();
         }
 

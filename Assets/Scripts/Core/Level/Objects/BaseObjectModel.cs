@@ -10,6 +10,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         InjectorContext IModel.ModelType => Data;
 
         public Vector2 coords;
+        public Direction direction;
+        public float speed;
 
         public virtual bool AllowObject(ObjectType other)
         {

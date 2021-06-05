@@ -4,14 +4,6 @@ namespace Variecs.ProjectDII.Core.Level.Objects
 {
     public abstract class BaseObjectData : InjectorContext, IFactory<IObjectPackage>
     {
-        protected override void PreInject()
-        {
-            base.PreInject();
-
-            Bind<InjectorContext>().ToValue(this);
-            Bind<BaseObjectData>().ToValue(this);
-        }
-
         public bool ManuallyInjected => true;
         public ObjectType objectType;
         public abstract IObjectPackage GetInstance();
