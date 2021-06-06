@@ -7,7 +7,6 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         [field: Inject] public EnemyData Data { get; protected set; }
         [field: Inject] public BaseObjectModel Model { get; protected set; }
         [field: Inject] public IMovable Movable { get; protected set; }
-        [Inject] private LevelModel levelModel;
 
         private bool stationary = true;
         
@@ -31,7 +30,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             stationary = i >= Data.directionPreferences.Length;
         }
         
-        public void Update()
+        public void Update(float deltaTime)
         {
             if (stationary)
             {
@@ -53,7 +52,6 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             Data = null;
             Model = null;
             Movable = null;
-            levelModel = null;
         }
     }
 }

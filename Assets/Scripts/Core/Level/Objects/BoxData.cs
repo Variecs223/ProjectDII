@@ -14,6 +14,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             base.PreInject();
 
             Bind<BoxData>().ToValue(this);
+            Bind<BaseObjectData>().ToValue(this);
             BaseContext.Bind<BaseObjectData>().ToValue(this).ForList();
             Bind<GameObject>().ToValue(boxPrefab).ForType<BoxPackage>();
             Bind<Transform>().ToName(LevelLayoutView.ObjectContainerName).ForType<BoxPackage>();

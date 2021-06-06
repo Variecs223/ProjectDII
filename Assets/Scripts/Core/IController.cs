@@ -4,6 +4,6 @@ namespace Variecs.ProjectDII.Core
 {
     public interface IController: IDisposable
     {
-        void Update();
+        void Update(float deltaTime);
     }
 }

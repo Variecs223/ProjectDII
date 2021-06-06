@@ -35,22 +35,23 @@ namespace Variecs.ProjectDII.Core.Level
 
             foreach (var objectLocation in Data.objects)
             {
-                AddObject(objectLocation.Type, objectLocation.Coords);
+                AddObject(objectLocation.Type, objectLocation.Coords, objectLocation.Direction);
             }
         }
 
-        public void AddObject(ObjectType type, Vector2Int coords)
+        public void AddObject(ObjectType type, Vector2Int coords, Direction dir = Direction.Up)
         {
             using var package = objectFactory.GetInstance(type);
             
-            AddObject(package, coords);
+            AddObject(package, coords, dir);
         }
 
-        public void AddObject(IObjectPackage package, Vector2Int coords)
+        public void AddObject(IObjectPackage package, Vector2Int coords, Direction dir = Direction.Up)
         {
             package.GetModels(model =>
             {
                 model.coords = coords + Vector2.one * 0.5f;
+                model.direction = dir;
                 Tiles[coords.y * Data.fieldSize.x + coords.x].objects.Add(
                     new BaseTileModel.ObjectTransitionState
                     {

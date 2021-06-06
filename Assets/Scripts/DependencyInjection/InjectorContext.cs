@@ -343,7 +343,7 @@ namespace Variecs.ProjectDII.DependencyInjection
                 return true;
             }
             
-            Debug.LogError($"No bindings found for type {field.FieldType} when injecting into mandatory field {field.Name} of object {target}");
+            Debug.LogError($"No bindings found in context {this} for type {field.FieldType} when injecting into mandatory field {field.Name} of object {target}");
             return false;
         }
         

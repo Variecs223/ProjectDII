@@ -14,19 +14,21 @@ namespace Variecs.ProjectDII.Core.Level.Objects
 
         public event Action OnMoveEnded;
         
-        public void Update()
+        public void Update(float deltaTime)
         {
-            Model.coords += (Vector2)Dir2Vel(Model.direction) * Model.speed;
+            Model.coords += (Vector2)Dir2Vel(Model.direction) * (Model.speed * deltaTime);
 
             if (TryEndMove())
             {
                 OnMoveEnded?.Invoke();
             }
+
+            excess = 0;
         }
 
         public bool TryEndMove()
         {
-            var enteringTileCoords = new Vector2Int(Mathf.RoundToInt(Model.coords.x), Mathf.RoundToInt(Model.coords.y));
+            var enteringTileCoords = new Vector2Int(Mathf.FloorToInt(Model.coords.x), Mathf.FloorToInt(Model.coords.y));
             var leavingTileCoords = enteringTileCoords;
             var enteringTile = levelModel.Tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
             var leavingTile = enteringTile;
@@ -57,7 +59,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 return false;
             }
             
-            excess = (Model.coords - enteringTileCoords).magnitude;
+            excess = (Model.coords - enteringTileCoords - Vector2.one * 0.5f).magnitude;
             leavingTile.objects.RemoveAll(obj => obj.Object == Model);
             var objIndex = enteringTile.objects.FindIndex(obj => obj.Object == Model);
 
@@ -72,7 +74,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 Object = Model,
                 State = TransitionState.Stationary
             };
-            Model.coords = enteringTileCoords;    
+            Model.coords = enteringTileCoords + Vector2.one * 0.5f;
+            Model.speed = 0;
             
             return true;
 
@@ -80,10 +83,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         
         public bool TryStartMove(Direction direction, float speed)
         {
-            Model.direction = direction;
-            Model.speed = speed;
             
-            var leavingTileCoords = new Vector2Int(Mathf.RoundToInt(Model.coords.x), Mathf.RoundToInt(Model.coords.y));
+            var leavingTileCoords = new Vector2Int(Mathf.FloorToInt(Model.coords.x), Mathf.FloorToInt(Model.coords.y));
             var leavingTile = levelModel.Tiles[leavingTileCoords.y * levelModel.Data.fieldSize.x + leavingTileCoords.x];
             
             var objectIndex = leavingTile.objects.FindIndex(transition => transition.Object == Model);
@@ -115,6 +116,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             });
             
             Model.coords += (Vector2)Dir2Vel(direction) * excess;
+            Model.direction = direction;
+            Model.speed = speed;
             excess = 0;
 
             return true;

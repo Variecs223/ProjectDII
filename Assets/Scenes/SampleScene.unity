@@ -310,6 +310,7 @@ MonoBehaviour:
   levelData: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
   objectDatas:
   - {fileID: 11400000, guid: 0649d714a415d4348a79b1355b24054a, type: 2}
+  - {fileID: 11400000, guid: afd5721dd248929479442d4e9b73a36e, type: 2}
 --- !u!222 &1962618109
 CanvasRenderer:
   m_ObjectHideFlags: 0

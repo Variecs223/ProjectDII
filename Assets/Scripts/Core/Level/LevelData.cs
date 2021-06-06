@@ -12,6 +12,7 @@ namespace Variecs.ProjectDII.Core.Level
         {
             public ObjectType Type;
             public Vector2Int Coords;
+            public Direction Direction;
         }
         
         [SerializeField] private GameObject viewPrefab;

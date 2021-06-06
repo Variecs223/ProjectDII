@@ -29,11 +29,11 @@ namespace Variecs.ProjectDII.Core.Level
             }
         }
 
-        public void Update()
+        public void Update(float deltaTime)
         {
             foreach (var controller in ObjectControllers)
             {
-                controller.Update();
+                controller.Update(deltaTime);
             }
         }
 

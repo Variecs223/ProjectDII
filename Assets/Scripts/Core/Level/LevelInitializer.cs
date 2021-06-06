@@ -36,7 +36,7 @@ namespace Variecs.ProjectDII.Core.Level
 
         protected void Update()
         {
-            controller.Update();
+            controller.Update(Time.deltaTime);
         }
 
         protected void OnDestroy()

@@ -17,6 +17,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             base.PreInject();
 
             Bind<EnemyData>().ToValue(this);
+            Bind<BaseObjectData>().ToValue(this);
             BaseContext.Bind<BaseObjectData>().ToValue(this).ForList();
             Bind<GameObject>().ToValue(enemyPrefab).ForType<EnemyPackage>();
             Bind<Transform>().ToName(LevelLayoutView.ObjectContainerName).ForType<EnemyPackage>();
@@ -46,7 +47,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             [Inject] private GameObject viewPrefab;
             [Inject] private Transform viewContainer;
             
-            private BaseObjectModel enemyModel;
+            private EnemyModel enemyModel;
             private MovableController movableController;
             private EnemyAIController enemyAIController;
             private GameObject view;
@@ -55,7 +56,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             {
                 if (enemyModel == null)
                 {
-                    enemyModel = CreateInstance<BaseObjectModel>();
+                    enemyModel = CreateInstance<EnemyModel>();
                     enemyData.Inject(enemyModel);
                 }
                 
@@ -125,6 +126,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 viewContainer = null;
                 enemyModel = null;
                 movableController = null;
+                enemyAIController = null;
                 view = null;
                 ObjectPool<EnemyPackage>.Put(this);
             }

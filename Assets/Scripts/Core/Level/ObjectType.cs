@@ -2,6 +2,11 @@
 {
     public enum ObjectType
     {
-        Box = 0
+        Box = 0,
+        EnemyTurnRight = 1,
+        EnemyTurnLeft = 2,
+        EnemyFollowRight = 3,
+        EnemyFollowLeft = 4,
+        EnemyBackForth = 5,
     }
 }
