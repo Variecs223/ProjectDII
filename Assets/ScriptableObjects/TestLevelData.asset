@@ -24,3 +24,6 @@ MonoBehaviour:
   - Type: 1
     Coords: {x: 5, y: 1}
     Direction: 3
+  actions:
+  - Type: 1
+    Amount: 3

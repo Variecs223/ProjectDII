@@ -1,26 +1,26 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Actions;
 using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class TileFactory: IFactory<BaseTileModel, TileType>
+    public class PlayerActionFactory: IFactory<IPlayerAction, PlayerActionType>
     {
         [Inject] private InjectorContext context;
         
         public bool ManuallyInjected => true;
 
-        private readonly Dictionary<TileType, IFactory<BaseTileModel>> concreteFactories = new Dictionary<TileType, IFactory<BaseTileModel>>();
-        public IReadOnlyDictionary<TileType, IFactory<BaseTileModel>> ConcreteFactories => concreteFactories;
+        private readonly Dictionary<PlayerActionType, IFactory<IPlayerAction>> concreteFactories = new Dictionary<PlayerActionType, IFactory<IPlayerAction>>();
+        public IReadOnlyDictionary<PlayerActionType, IFactory<IPlayerAction>> ConcreteFactories => concreteFactories;
 
-        public TileFactory()
+        public PlayerActionFactory()
         {
-            concreteFactories.Add(TileType.EmptyTile, new ObjectPoolFactory<EmptyTileModel>());
-            concreteFactories.Add(TileType.Wall, new ObjectPoolFactory<WallModel>());
+            concreteFactories.Add(PlayerActionType.PlaceBox, new ObjectPoolFactory<PlaceBoxPlayerAction>());
         }
         
-        public BaseTileModel GetInstance(TileType type)
+        public IPlayerAction GetInstance(PlayerActionType type)
         {
             if (!concreteFactories.ContainsKey(type))
             {
@@ -28,14 +28,14 @@ namespace Variecs.ProjectDII.Core.Level
                 return null;
             }
 
-            var tile = concreteFactories[type].GetInstance();
+            var action = concreteFactories[type].GetInstance();
             
             if (!concreteFactories[type].ManuallyInjected)
             {
-                context.Inject(tile);
+                context.Inject(action);
             }
 
-            return tile;
+            return action;
         }
         
         public void Dispose()

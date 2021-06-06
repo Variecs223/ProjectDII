@@ -14,12 +14,20 @@ namespace Variecs.ProjectDII.Core.Level
             public Vector2Int Coords;
             public Direction Direction;
         }
+
+        [Serializable]
+        public struct ActionCategory
+        {
+            public PlayerActionType Type;
+            public int Amount;
+        }
         
         [SerializeField] private GameObject viewPrefab;
         [Inject(Name="LevelContainer")] [SerializeField] private Transform viewContainer;
         public Vector2Int fieldSize;
         public TileType[] tiles;
         public ObjectLocation[] objects;
+        public ActionCategory[] actions;
         
         protected override void PreInject()
         {
@@ -29,7 +37,7 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<LevelData>().ToValue(this);
             Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
             Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
-            Bind<ObjectFactory>().ToSingleton<ObjectFactory>();
+            Bind<IFactory<IPlayerAction, PlayerActionType>>().ToSingleton<PlayerActionFactory>();
         }
 
         public LevelModel GetLevelModel()

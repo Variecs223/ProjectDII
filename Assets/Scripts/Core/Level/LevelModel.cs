@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
 
@@ -12,6 +13,9 @@ namespace Variecs.ProjectDII.Core.Level
         [Inject] private IFactory<IObjectPackage, ObjectType> objectFactory;
 
         [SerializeField] protected BaseTileModel[] tiles;
+        public LevelData.ActionCategory[] actions;
+        public int selectedAction;
+        
         public BaseTileModel[] Tiles => tiles;
 
         public LevelData Data => data;
@@ -37,6 +41,8 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 AddObject(objectLocation.Type, objectLocation.Coords, objectLocation.Direction);
             }
+
+            actions = Data.actions.ToArray();
         }
 
         public void AddObject(ObjectType type, Vector2Int coords, Direction dir = Direction.Up)
@@ -69,6 +75,14 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 Data.UnmarkAsInjected(this);
             }
+
+            foreach (var tile in tiles)
+            {
+                tile.Dispose();
+            }
+
+            tiles = null;
+            actions = null;
         }
     }
 }

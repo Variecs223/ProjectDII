@@ -11,7 +11,6 @@ namespace Variecs.ProjectDII.Core.Level
         
         [Inject] [SerializeField] private LevelModel model;
         [Inject] private LevelController controller;
-        [Inject] private ObjectFactory objectFactory;
 
         [SerializeField] private RawImage levelDisplay;
         [SerializeField] private RectTransform objectContainer;

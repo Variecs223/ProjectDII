@@ -7,7 +7,7 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelController: IController, IInjectable
     {
         [field: Inject] private LevelModel model;
-        [Inject] private ObjectFactory objectFactory;
+        [Inject] private IFactory<IPlayerAction, PlayerActionType> playerActionFactory;
 
         protected readonly List<IController> ObjectControllers = new List<IController>();
 
@@ -23,9 +23,16 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void OnTileClick(Vector2Int coords)
         {
-            if (model.Tiles[coords.y * model.Data.fieldSize.x + coords.x].AllowObject(ObjectType.Box))
+            if (model.actions[model.selectedAction].Amount <= 0)
             {
-                model.AddObject(ObjectType.Box, coords);
+                return;
+            }
+            
+            using var action = playerActionFactory.GetInstance(model.actions[model.selectedAction].Type);
+
+            if (action.Perform(coords))
+            {
+                model.actions[model.selectedAction].Amount--;
             }
         }
 
