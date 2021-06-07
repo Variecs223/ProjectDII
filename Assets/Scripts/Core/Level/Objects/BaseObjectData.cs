@@ -6,6 +6,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
     {
         public bool ManuallyInjected => true;
         public ObjectType objectType;
+        public bool canCharge;
         public abstract IObjectPackage GetInstance();
 
         public override void Dispose()

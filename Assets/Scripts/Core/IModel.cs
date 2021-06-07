@@ -7,5 +7,7 @@ namespace Variecs.ProjectDII.Core
     public interface IModel: IDisposable
     {
         InjectorContext ModelType { get; }
+
+        event Action OnRemoved;
     }
 }

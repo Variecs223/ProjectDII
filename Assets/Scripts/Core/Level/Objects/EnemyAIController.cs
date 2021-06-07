@@ -8,11 +8,15 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         [field: Inject] public BaseObjectModel Model { get; protected set; }
         [field: Inject] public IMovable Movable { get; protected set; }
 
+        [Inject(Name = LevelData.CurrentLevelTag)]
+        private LevelController levelController;
+
         private bool stationary = true;
         
         public void OnInjected()
         {
             Movable.OnMoveEnded += TryStartMove;
+            Model.OnRemoved += Dispose;
             
             stationary = true;
         }
@@ -45,13 +49,28 @@ namespace Variecs.ProjectDII.Core.Level.Objects
 
         public void Dispose()
         {
-            Movable.OnMoveEnded -= TryStartMove;
+            levelController?.RemoveController(this);
+
+            if (Model != null)
+            {
+                Model.OnRemoved -= Dispose;
+
+                if (Model.Data != null)
+                {
+                    Model.Data.UnmarkAsInjected(this);
+                    Model.Data.UnbindObject(this);
+                }
+            }
+
+            if (Movable != null)
+            {
+                Movable.OnMoveEnded -= TryStartMove;
+            }
             
-            Model.Data.UnmarkAsInjected(this);
-            Model.Data.UnbindObject(this);
             Data = null;
             Model = null;
             Movable = null;
+            levelController = null;
         }
     }
 }

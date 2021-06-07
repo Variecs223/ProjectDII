@@ -146,7 +146,7 @@ namespace Variecs.ProjectDII.DependencyInjection
             var tempList = ObjectPool<List<IBindable<object>>>.Get();
             tempList.AddRange(gameObjectBindings[target]);
 
-            foreach (var bindable in gameObjectBindings[target])
+            foreach (var bindable in tempList)
             {
                 Unbind(bindable);
             }

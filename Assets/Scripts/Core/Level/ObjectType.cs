@@ -8,5 +8,6 @@
         EnemyFollowRight = 3,
         EnemyFollowLeft = 4,
         EnemyBackForth = 5,
+        SingleAccumulator = 6
     }
 }

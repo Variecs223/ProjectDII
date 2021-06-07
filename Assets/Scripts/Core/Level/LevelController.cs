@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
 
@@ -10,15 +11,25 @@ namespace Variecs.ProjectDII.Core.Level
         [Inject] private IFactory<IPlayerAction, PlayerActionType> playerActionFactory;
 
         protected readonly List<IController> ObjectControllers = new List<IController>();
+        private readonly List<IController> removalList = new List<IController>();
 
         public void OnInjected()
         {
             model.OnObjectAdded += AddController;
+            model.OnRemoved += Dispose;
         }
 
         protected void AddController(IObjectPackage package)
         {
             package.GetControllers(controller => ObjectControllers.Add(controller));
+        }
+
+        public void RemoveController(IController controller)
+        {
+            if (ObjectControllers.Contains(controller))
+            {
+                removalList.Add(controller);
+            }
         }
 
         public void OnTileClick(Vector2Int coords)
@@ -42,12 +53,23 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 controller.Update(deltaTime);
             }
+
+            foreach (var controller in removalList.Where(controller => ObjectControllers.Contains(controller)))
+            {
+                ObjectControllers.Remove(controller);
+            }
+
+            if (removalList.Any())
+            {
+                removalList.Clear();
+            }
         }
 
         public void Dispose()
         {
             if (model != null)
             {
+                model.OnRemoved -= Dispose;
                 model.OnObjectAdded -= AddController;
                 
                 if (model.Data != null)
@@ -63,7 +85,6 @@ namespace Variecs.ProjectDII.Core.Level
             }
 
             ObjectControllers.Clear();
-            
         }
     }
 }

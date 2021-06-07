@@ -5,11 +5,11 @@ namespace Variecs.ProjectDII.Core.Level.Actions
 {
     public class PlaceBoxPlayerAction: IPlayerAction
     {
-        [Inject] private LevelModel levelModel;
+        [Inject(Name=LevelData.CurrentLevelTag)] private LevelModel levelModel;
         
         public bool Perform(Vector2Int coords)
         {
-            if (!levelModel.Tiles[coords.y * levelModel.Data.fieldSize.x + coords.x].AllowObject(ObjectType.Box))
+            if (!levelModel.tiles[coords.y * levelModel.Data.fieldSize.x + coords.x].AllowObject(ObjectType.Box))
             {
                 return false;
             }

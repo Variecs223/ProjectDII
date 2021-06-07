@@ -5,14 +5,20 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.Objects
 {
-    public class MovableController: IController, IMovable
+    public class MovableController: IController, IMovable, IInjectable
     {
         [field: Inject] public BaseObjectModel Model { get; protected set; }
-        [Inject] private LevelModel levelModel;
+        [Inject(Name=LevelData.CurrentLevelTag)] private LevelModel levelModel;
+        [Inject(Name=LevelData.CurrentLevelTag)] private LevelController levelController;
 
         private float excess;
 
         public event Action OnMoveEnded;
+
+        public void OnInjected()
+        {
+            Model.OnRemoved += Dispose;
+        }
         
         public void Update(float deltaTime)
         {
@@ -30,7 +36,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         {
             var enteringTileCoords = new Vector2Int(Mathf.FloorToInt(Model.coords.x), Mathf.FloorToInt(Model.coords.y));
             var leavingTileCoords = enteringTileCoords;
-            var enteringTile = levelModel.Tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
+            var enteringTile = levelModel.tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
             var leavingTile = enteringTile;
 
             var objectTransition = enteringTile.objects.FirstOrDefault(transition => transition.Object == Model);
@@ -44,12 +50,12 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             if (objectTransition.State == TransitionState.Leaving)
             {
                 enteringTileCoords += Dir2Vel(Model.direction);
-                enteringTile = levelModel.Tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
+                enteringTile = levelModel.tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
             }
             else
             {
                 leavingTileCoords -= Dir2Vel(Model.direction);
-                leavingTile = levelModel.Tiles[leavingTileCoords.y * levelModel.Data.fieldSize.x + leavingTileCoords.x];
+                leavingTile = levelModel.tiles[leavingTileCoords.y * levelModel.Data.fieldSize.x + leavingTileCoords.x];
             }
 
             var diff = (Model.coords - enteringTileCoords - Vector2.one * 0.5f) * Dir2Vel(Model.direction);
@@ -85,7 +91,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         {
             
             var leavingTileCoords = new Vector2Int(Mathf.FloorToInt(Model.coords.x), Mathf.FloorToInt(Model.coords.y));
-            var leavingTile = levelModel.Tiles[leavingTileCoords.y * levelModel.Data.fieldSize.x + leavingTileCoords.x];
+            var leavingTile = levelModel.tiles[leavingTileCoords.y * levelModel.Data.fieldSize.x + leavingTileCoords.x];
             
             var objectIndex = leavingTile.objects.FindIndex(transition => transition.Object == Model);
 
@@ -96,7 +102,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             }
 
             var enteringTileCoords = leavingTileCoords + Dir2Vel(direction);
-            var enteringTile = levelModel.Tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
+            var enteringTile = levelModel.tiles[enteringTileCoords.y * levelModel.Data.fieldSize.x + enteringTileCoords.x];
 
             if (!enteringTile.AllowObject(Model.Data.objectType))
             {
@@ -123,7 +129,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             return true;
         }
 
-        private static Vector2Int Dir2Vel(Direction direction)
+        public static Vector2Int Dir2Vel(Direction direction)
         {
             switch (direction)
             {
@@ -142,10 +148,22 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         
         public void Dispose()
         {
-            Model.Data.UnmarkAsInjected(this);
-            Model.Data.UnbindObject(this);
+            levelController?.RemoveController(this);
+
+            if (Model != null)
+            {
+                Model.OnRemoved -= Dispose;
+
+                if (Model.Data != null)
+                {
+                    Model.Data.UnmarkAsInjected(this);
+                    Model.Data.UnbindObject(this);
+                }
+            }
+            
             Model = null;
             levelModel = null;
+            levelController = null;
         }
     }
 }

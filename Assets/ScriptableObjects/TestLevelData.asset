@@ -22,8 +22,11 @@ MonoBehaviour:
     Coords: {x: 3, y: 1}
     Direction: 3
   - Type: 1
-    Coords: {x: 5, y: 1}
-    Direction: 3
+    Coords: {x: 7, y: 3}
+    Direction: 1
+  - Type: 6
+    Coords: {x: 4, y: 4}
+    Direction: 0
   actions:
   - Type: 1
     Amount: 3

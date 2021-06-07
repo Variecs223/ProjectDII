@@ -4,7 +4,7 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.Objects
 {
-    [CreateAssetMenu(fileName = "EnemyData", menuName = "DII/Core/Objects/Enemy", order = 0)]
+    [CreateAssetMenu(fileName = "EnemyData", menuName = "DII/Core/Objects/Enemy", order = 1)]
     public class EnemyData : BaseObjectData, IFactory<EnemyData.EnemyPackage>
     {
         [SerializeField] private GameObject enemyPrefab;
@@ -47,7 +47,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             [Inject] private GameObject viewPrefab;
             [Inject] private Transform viewContainer;
             
-            private EnemyModel enemyModel;
+            private BaseObjectModel enemyModel;
             private MovableController movableController;
             private EnemyAIController enemyAIController;
             private GameObject view;
@@ -56,7 +56,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             {
                 if (enemyModel == null)
                 {
-                    enemyModel = CreateInstance<EnemyModel>();
+                    enemyModel = CreateInstance<BaseObjectModel>();
                     enemyData.Inject(enemyModel);
                 }
                 

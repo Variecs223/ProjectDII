@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.Objects
@@ -13,14 +14,16 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         public Direction direction;
         public float speed;
 
+        public event Action OnRemoved;
+        
         public virtual bool AllowObject(ObjectType other)
         {
-            return true;
+            return other != ObjectType.Box;
         }
         
         public virtual void Dispose()
         {
-            
+            OnRemoved?.Invoke();
         }
     }
 }

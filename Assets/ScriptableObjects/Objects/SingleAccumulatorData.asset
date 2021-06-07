@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 950705ba30ac42ad966a477d387692b2, type: 3}
-  m_Name: EnemyTurnRightData
+  m_Script: {fileID: 11500000, guid: bb9465240bd34e7a8b2a6281684c598f, type: 3}
+  m_Name: SingleAccumulatorData
   m_EditorClassIdentifier: 
   parentContext: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
-  objectType: 1
-  canCharge: 1
-  enemyPrefab: {fileID: 5259510105823004800, guid: 8ab28d2c2e73239408deac1c991d3850, type: 3}
-  baseSpeed: 2
-  directionPreferences: 00000000010000000300000002000000
+  objectType: 6
+  canCharge: 0
+  accumulatorPrefab: {fileID: 5414586849143599365, guid: 2c9011a812928cd4f81255cc3112475a, type: 3}
+  capacity: 1
+  minDistance: 0.2

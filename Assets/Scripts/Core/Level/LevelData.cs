@@ -21,6 +21,8 @@ namespace Variecs.ProjectDII.Core.Level
             public PlayerActionType Type;
             public int Amount;
         }
+
+        public const string CurrentLevelTag = "CurrentLevel";
         
         [SerializeField] private GameObject viewPrefab;
         [Inject(Name="LevelContainer")] [SerializeField] private Transform viewContainer;
@@ -44,6 +46,7 @@ namespace Variecs.ProjectDII.Core.Level
         {
             var model = new LevelModel();
             Inject(model);
+            Bind<LevelModel>().ToValue(model).ForName(CurrentLevelTag);
             return model;
         }
 
@@ -52,12 +55,14 @@ namespace Variecs.ProjectDII.Core.Level
             var controller = new LevelController();
             Bind<LevelModel>().ToValue(model).ForObject(controller);
             Inject(controller);
+            Bind<LevelController>().ToValue(controller).ForName(CurrentLevelTag);
             return controller;
         }
 
         public GameObject GetLevelView(LevelModel model, LevelController controller)
         {
             var view = Instantiate(viewPrefab, viewContainer);
+            
             Bind<LevelModel>().ToValue(model).ForGameObject(view);
             Bind<LevelController>().ToValue(controller).ForGameObject(view);
 
@@ -65,6 +70,8 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 Inject(injectable);
             }
+            
+            Bind<GameObject>().ToValue(view).ForName(CurrentLevelTag);
                 
             return view;
         }

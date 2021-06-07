@@ -6,7 +6,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
     public class BaseObjectView : MonoBehaviour, IInjectable
     {
         [Inject] [SerializeField] private BaseObjectModel objectModel;
-        [Inject] private LevelModel levelModel;
+        [Inject] private LevelData levelData;
+        [Inject(Name=LevelData.CurrentLevelTag)] private GameObject levelView;
         [SerializeField] private RectTransform rectTransform;
 
         public void OnInjected()
@@ -15,11 +16,13 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             {
                 rectTransform = GetComponent<RectTransform>();
             }
+
+            objectModel.OnRemoved += DestroyGameObject;
         }
         
         protected void Update()
         {
-            var uvCoords = objectModel.coords / levelModel.Data.fieldSize;
+            var uvCoords = objectModel.coords / levelData.fieldSize;
             rectTransform.anchorMin = uvCoords;
             rectTransform.anchorMax = uvCoords;
         }
@@ -31,8 +34,22 @@ namespace Variecs.ProjectDII.Core.Level.Objects
 
         public void Dispose()
         {
+            objectModel.OnRemoved -= DestroyGameObject;
+            
+            var levelLayoutView = levelView.GetComponent<LevelLayoutView>();
+
+            if (levelLayoutView != null)
+            {
+                levelLayoutView.RemoveView(gameObject);
+            }
+            
             objectModel.Data.UnmarkAsInjected(this);
             objectModel.Data.UnbindGameObject(gameObject);
+        }
+
+        private void DestroyGameObject()
+        {
+            Destroy(gameObject);
         }
     }
 }

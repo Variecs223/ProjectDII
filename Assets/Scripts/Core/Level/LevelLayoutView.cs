@@ -45,6 +45,7 @@ namespace Variecs.ProjectDII.Core.Level
             InjectorContext.BaseContext.Bind<Transform>().ToValue(objectContainer).ForName(ObjectContainerName);
             
             model.OnObjectAdded += AddViews;
+            model.OnRemoved += DestroyGameObject;
         }
 
         protected void AddViews(IObjectPackage package)
@@ -62,6 +63,14 @@ namespace Variecs.ProjectDII.Core.Level
                     rectTransform.anchorMax = uvCoords;
                 });
             });
+        }
+
+        public void RemoveView(GameObject target)
+        {
+            if (objectViews.Contains(target))
+            {
+                objectViews.Remove(target);
+            }
         }
 
         protected void Start()
@@ -85,6 +94,7 @@ namespace Variecs.ProjectDII.Core.Level
 
             if (model != null)
             {
+                model.OnRemoved -= DestroyGameObject;
                 model.OnObjectAdded -= AddViews;
 
                 if (model.Data != null)
@@ -93,6 +103,11 @@ namespace Variecs.ProjectDII.Core.Level
                     model.Data.UnbindGameObject(gameObject);
                 }
             }
+        }
+
+        private void DestroyGameObject()
+        {
+            Destroy(gameObject);
         }
     }
 }

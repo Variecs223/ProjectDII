@@ -24,13 +24,13 @@ namespace Variecs.ProjectDII.Core.Level
 
             foreach (var objectData in objectDatas)
             {
+                objectData.ParentContext = levelData;
                 objectData.Init();
             }
             
             model = levelData.GetLevelModel();
             controller = levelData.GetLevelController(model);
             layoutView = levelData.GetLevelView(model, controller).GetComponent<LevelLayoutView>();
-            InjectorContext.BaseContext.Bind<LevelModel>().ToValue(model);
             model.Load();
         }
 
@@ -51,7 +51,6 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void Dispose()
         {
-            controller.Dispose();
             model.Dispose();
             levelData.Dispose();
             
