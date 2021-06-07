@@ -25,8 +25,13 @@ MonoBehaviour:
     Coords: {x: 7, y: 3}
     Direction: 1
   - Type: 6
-    Coords: {x: 4, y: 4}
+    Coords: {x: 3, y: 4}
+    Direction: 0
+  - Type: 6
+    Coords: {x: 5, y: 4}
     Direction: 0
   actions:
   - Type: 1
     Amount: 3
+  winConditions: 00000000
+  loseConditions: 01000000

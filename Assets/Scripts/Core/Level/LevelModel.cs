@@ -13,11 +13,15 @@ namespace Variecs.ProjectDII.Core.Level
         [Inject] [SerializeField] protected LevelData data;
         [Inject] private IFactory<BaseTileModel, TileType> tileFactory;
         [Inject] private IFactory<IObjectPackage, ObjectType> objectFactory;
+        [Inject] private IFactory<IEndCondition, EndConditionType> endConditionFactory;
 
         public BaseTileModel[] tiles;
         public List<BaseObjectModel> objects;
         public LevelData.ActionCategory[] actions;
         public int selectedAction;
+        
+        public readonly List<IEndCondition> LoseConditions = new List<IEndCondition>();
+        public readonly List<IEndCondition> WinConditions = new List<IEndCondition>();
         
         public LevelData Data => data;
         InjectorContext IModel.ModelType => Data;
@@ -47,6 +51,20 @@ namespace Variecs.ProjectDII.Core.Level
             }
 
             actions = Data.actions.ToArray();
+
+            WinConditions.Clear();
+            
+            foreach (var winCondition in Data.winConditions)
+            {
+                WinConditions.Add(endConditionFactory.GetInstance(winCondition));
+            }
+
+            LoseConditions.Clear();
+            
+            foreach (var loseCondition in Data.loseConditions)
+            {
+                LoseConditions.Add(endConditionFactory.GetInstance(loseCondition));
+            }
         }
 
         public void AddObject(ObjectType type, Vector2Int coords, Direction dir = Direction.Up)

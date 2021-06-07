@@ -13,6 +13,8 @@ namespace Variecs.ProjectDII.Core.Level
         protected readonly List<IController> ObjectControllers = new List<IController>();
         private readonly List<IController> removalList = new List<IController>();
 
+        private bool tempState;
+        
         public void OnInjected()
         {
             model.OnObjectAdded += AddController;
@@ -34,7 +36,7 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void OnTileClick(Vector2Int coords)
         {
-            if (model.actions[model.selectedAction].Amount <= 0)
+            if (tempState || model.actions[model.selectedAction].Amount <= 0)
             {
                 return;
             }
@@ -47,13 +49,39 @@ namespace Variecs.ProjectDII.Core.Level
             }
         }
 
+        public bool CheckVictory()
+        {
+            if (!model.WinConditions.Any(victoryCondition => victoryCondition.Check()))
+            {
+                return false;
+            }
+            
+            tempState = true;
+            return true;
+
+        }
+
+        public bool CheckDefeat()
+        {
+            if (!model.LoseConditions.Any(defeatCondition => defeatCondition.Check()))
+            {
+                return false;
+            }
+            
+            tempState = true;
+            return true;
+        }
+
         public void Update(float deltaTime)
         {
-            foreach (var controller in ObjectControllers)
+            if (!tempState)
             {
-                controller.Update(deltaTime);
+                foreach (var controller in ObjectControllers)
+                {
+                    controller.Update(deltaTime);
+                }
             }
-
+            
             foreach (var controller in removalList.Where(controller => ObjectControllers.Contains(controller)))
             {
                 ObjectControllers.Remove(controller);

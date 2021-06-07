@@ -30,6 +30,8 @@ namespace Variecs.ProjectDII.Core.Level
         public TileType[] tiles;
         public ObjectLocation[] objects;
         public ActionCategory[] actions;
+        public EndConditionType[] winConditions = { EndConditionType.Accumulator };
+        public EndConditionType[] loseConditions = { EndConditionType.Overcharge };
         
         protected override void PreInject()
         {
@@ -40,6 +42,7 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
             Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
             Bind<IFactory<IPlayerAction, PlayerActionType>>().ToSingleton<PlayerActionFactory>();
+            Bind<IFactory<IEndCondition, EndConditionType>>().ToSingleton<EndConditionFactory>();
         }
 
         public LevelModel GetLevelModel()

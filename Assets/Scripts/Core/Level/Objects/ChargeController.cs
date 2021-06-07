@@ -24,13 +24,13 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             foreach (var obj in levelModel.objects.Where(obj => obj.Data.canCharge 
                                                                 && Vector2.Distance(obj.coords, ObjectModel.coords) <= Data.minDistance))
             {
-                if (ObjectModel.charge >= Data.capacity)
-                {
-                    // defeat
-                }
-                    
                 ObjectModel.charge++;
                 removalList.Add(obj);
+
+                if (levelController.CheckDefeat() || levelController.CheckVictory())
+                {
+                    break;
+                }
             }
 
             foreach (var obj in removalList)
