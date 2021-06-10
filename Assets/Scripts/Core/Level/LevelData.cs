@@ -31,7 +31,8 @@ namespace Variecs.ProjectDII.Core.Level
         public ObjectLocation[] objects;
         public ActionCategory[] actions;
         public EndConditionType[] winConditions = { EndConditionType.Accumulator };
-        public EndConditionType[] loseConditions = { EndConditionType.Overcharge };
+        public EndConditionType[] loseConditions = { EndConditionType.Overcharge, EndConditionType.ChargeCollision };
+        public float minChargedDistance = 0.9f;
         
         protected override void PreInject()
         {

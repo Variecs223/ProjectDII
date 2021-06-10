@@ -27,7 +27,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 ObjectModel.charge++;
                 removalList.Add(obj);
 
-                if (levelController.CheckDefeat() || levelController.CheckVictory())
+                if (levelController.CheckDefeat(EndConditionType.Overcharge) || levelController.CheckVictory(EndConditionType.Accumulator))
                 {
                     break;
                 }

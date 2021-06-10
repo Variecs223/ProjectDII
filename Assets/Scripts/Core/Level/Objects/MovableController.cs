@@ -82,7 +82,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             };
             Model.coords = enteringTileCoords + Vector2.one * 0.5f;
             Model.speed = 0;
-            
+
             return true;
 
         }
@@ -125,7 +125,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             Model.direction = direction;
             Model.speed = speed;
             excess = 0;
-
+            
             return true;
         }
 

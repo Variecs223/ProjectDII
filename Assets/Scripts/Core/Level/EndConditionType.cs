@@ -3,6 +3,7 @@
     public enum EndConditionType
     {
         Accumulator = 0,
-        Overcharge = 1
+        Overcharge = 1,
+        ChargeCollision = 2
     }
 }

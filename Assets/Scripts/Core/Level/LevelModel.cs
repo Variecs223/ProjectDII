@@ -20,8 +20,8 @@ namespace Variecs.ProjectDII.Core.Level
         public LevelData.ActionCategory[] actions;
         public int selectedAction;
         
-        public readonly List<IEndCondition> LoseConditions = new List<IEndCondition>();
-        public readonly List<IEndCondition> WinConditions = new List<IEndCondition>();
+        public readonly Dictionary<EndConditionType, IEndCondition> LoseConditions = new Dictionary<EndConditionType, IEndCondition>();
+        public readonly Dictionary<EndConditionType, IEndCondition> WinConditions = new Dictionary<EndConditionType, IEndCondition>();
         
         public LevelData Data => data;
         InjectorContext IModel.ModelType => Data;
@@ -56,14 +56,14 @@ namespace Variecs.ProjectDII.Core.Level
             
             foreach (var winCondition in Data.winConditions)
             {
-                WinConditions.Add(endConditionFactory.GetInstance(winCondition));
+                WinConditions.Add(winCondition, endConditionFactory.GetInstance(winCondition));
             }
 
             LoseConditions.Clear();
             
             foreach (var loseCondition in Data.loseConditions)
             {
-                LoseConditions.Add(endConditionFactory.GetInstance(loseCondition));
+                LoseConditions.Add(loseCondition, endConditionFactory.GetInstance(loseCondition));
             }
         }
 

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Variecs.ProjectDII.Core.Level.Actions;
-using Variecs.ProjectDII.Core.Level.Tiles;
-using Variecs.ProjectDII.Core.Level.WinConditions;
+using Variecs.ProjectDII.Core.Level.EndConditions;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -20,6 +18,7 @@ namespace Variecs.ProjectDII.Core.Level
         {
             concreteFactories.Add(EndConditionType.Accumulator, new ObjectPoolFactory<AccumulatorWinCondition>());
             concreteFactories.Add(EndConditionType.Overcharge, new ObjectPoolFactory<OverchargeLoseCondition>());
+            concreteFactories.Add(EndConditionType.ChargeCollision, new ObjectPoolFactory<ChargeCollisionLoseCondition>());
         }
         
         public IEndCondition GetInstance(EndConditionType type)

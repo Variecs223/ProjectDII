@@ -49,9 +49,9 @@ namespace Variecs.ProjectDII.Core.Level
             }
         }
 
-        public bool CheckVictory()
+        public bool CheckVictory(EndConditionType type)
         {
-            if (!model.WinConditions.Any(victoryCondition => victoryCondition.Check()))
+            if (!model.WinConditions.ContainsKey(type) || !model.WinConditions[type].Check())
             {
                 return false;
             }
@@ -61,9 +61,9 @@ namespace Variecs.ProjectDII.Core.Level
 
         }
 
-        public bool CheckDefeat()
+        public bool CheckDefeat(EndConditionType type)
         {
-            if (!model.LoseConditions.Any(defeatCondition => defeatCondition.Check()))
+            if (!model.LoseConditions.ContainsKey(type) || !model.LoseConditions[type].Check())
             {
                 return false;
             }
@@ -80,6 +80,8 @@ namespace Variecs.ProjectDII.Core.Level
                 {
                     controller.Update(deltaTime);
                 }
+                
+                CheckDefeat(EndConditionType.ChargeCollision);
             }
             
             foreach (var controller in removalList.Where(controller => ObjectControllers.Contains(controller)))

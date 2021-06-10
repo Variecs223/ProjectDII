@@ -2,17 +2,17 @@
 using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.DependencyInjection;
 
-namespace Variecs.ProjectDII.Core.Level.WinConditions
+namespace Variecs.ProjectDII.Core.Level.EndConditions
 {
-    public class OverchargeLoseCondition: IEndCondition
+    public class AccumulatorWinCondition: IEndCondition
     {
         [Inject(Name = LevelData.CurrentLevelTag)]
         private LevelModel levelModel;
         
         public bool Check()
         {
-            return levelModel.objects.Any(obj =>
-                obj is AccumulatorModel accumulator && accumulator.charge > accumulator.ConcreteData.capacity);
+            return levelModel.objects.All(obj =>
+                !(obj is AccumulatorModel accumulator) || accumulator.charge == accumulator.ConcreteData.capacity);
         }
         
         public void Dispose()

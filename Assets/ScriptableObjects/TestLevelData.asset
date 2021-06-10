@@ -23,7 +23,7 @@ MonoBehaviour:
     Direction: 3
   - Type: 1
     Coords: {x: 7, y: 3}
-    Direction: 1
+    Direction: 3
   - Type: 6
     Coords: {x: 3, y: 4}
     Direction: 0
@@ -34,4 +34,5 @@ MonoBehaviour:
   - Type: 1
     Amount: 3
   winConditions: 00000000
-  loseConditions: 01000000
+  loseConditions: 0100000002000000
+  minChargedDistance: 1
