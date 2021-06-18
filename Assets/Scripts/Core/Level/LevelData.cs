@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Actions;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -18,7 +20,7 @@ namespace Variecs.ProjectDII.Core.Level
         [Serializable]
         public struct ActionCategory
         {
-            public PlayerActionType Type;
+            public ActionType Type;
             public int Amount;
         }
 
@@ -42,7 +44,9 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<LevelData>().ToValue(this);
             Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
             Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
-            Bind<IFactory<IPlayerAction, PlayerActionType>>().ToSingleton<PlayerActionFactory>();
+            Bind<IFactory<PlaceObjectAction>>().ToSingleton<ObjectPoolFactory<PlaceObjectAction>>().ForType<PlaceObjectAction.Factory>();
+            Bind<IFactory<IAction, ActionType>>().ToSingleton<ActionFactory>();
+            Bind<IFactory<IAction, ObjectType>>().ToSingleton<PlaceObjectAction.Factory>();
             Bind<IFactory<IEndCondition, EndConditionType>>().ToSingleton<EndConditionFactory>();
         }
 
@@ -53,22 +57,43 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<LevelModel>().ToValue(model).ForName(CurrentLevelTag);
             return model;
         }
+        
+        public LevelEditorModel GetLevelEditorModel(LevelModel model)
+        {
+            var editorModel = new LevelEditorModel();
+            Bind<LevelModel>().ToValue(model).ForObject(editorModel);
+            Inject(model);
+            Bind<LevelEditorModel>().ToValue(editorModel).ForName(CurrentLevelTag);
+            return editorModel;
+        }
 
         public LevelController GetLevelController(LevelModel model)
         {
             var controller = new LevelController();
             Bind<LevelModel>().ToValue(model).ForObject(controller);
             Inject(controller);
-            Bind<LevelController>().ToValue(controller).ForName(CurrentLevelTag);
+            Bind<IObjectControllerContainer>().ToValue(controller).ForName(CurrentLevelTag);
+            Bind<IEndConditionChecker>().ToValue(controller).ForName(CurrentLevelTag);
             return controller;
         }
 
-        public GameObject GetLevelView(LevelModel model, LevelController controller)
+        public LevelEditorController GetLevelEditorController(LevelModel model, LevelEditorModel editorModel)
+        {
+            var controller = new LevelEditorController();
+            Bind<LevelModel>().ToValue(model).ForObject(controller);
+            Bind<LevelEditorModel>().ToValue(editorModel).ForObject(controller);
+            Inject(controller);
+            Bind<IObjectControllerContainer>().ToValue(controller).ForName(CurrentLevelTag);
+            Bind<IEndConditionChecker>().ForName(CurrentLevelTag);
+            return controller;
+        }
+
+        public GameObject GetLevelView(LevelModel model, ITileClick controller)
         {
             var view = Instantiate(viewPrefab, viewContainer);
             
             Bind<LevelModel>().ToValue(model).ForGameObject(view);
-            Bind<LevelController>().ToValue(controller).ForGameObject(view);
+            Bind<ITileClick>().ToValue(controller).ForGameObject(view);
 
             foreach (var injectable in view.GetComponentsInChildren<IInjectable>())
             {

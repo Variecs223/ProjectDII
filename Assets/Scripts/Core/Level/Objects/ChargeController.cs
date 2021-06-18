@@ -10,7 +10,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         [field: Inject] public AccumulatorData Data { get; protected set; }
         [field: Inject] public AccumulatorModel ObjectModel { get; protected set; }
         [Inject(Name=LevelData.CurrentLevelTag)] private LevelModel levelModel;
-        [Inject(Name=LevelData.CurrentLevelTag)] private LevelController levelController;
+        [Inject(Name=LevelData.CurrentLevelTag)] private IObjectControllerContainer controllerContainer;
+        [Inject(Name=LevelData.CurrentLevelTag)] private IEndConditionChecker conditionChecker;
 
         public void OnInjected()
         {
@@ -27,7 +28,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
                 ObjectModel.charge++;
                 removalList.Add(obj);
 
-                if (levelController.CheckDefeat(EndConditionType.Overcharge) || levelController.CheckVictory(EndConditionType.Accumulator))
+                if (conditionChecker.CheckDefeat(EndConditionType.Overcharge) || conditionChecker.CheckVictory(EndConditionType.Accumulator))
                 {
                     break;
                 }
@@ -41,7 +42,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         
         public void Dispose()
         {
-            levelController?.RemoveController(this);
+            controllerContainer?.RemoveController(this);
 
             if (ObjectModel != null)
             {
@@ -56,7 +57,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             
             ObjectModel = null;
             levelModel = null;
-            levelController = null;
+            controllerContainer = null;
+            conditionChecker = null;
         }
     }
 }

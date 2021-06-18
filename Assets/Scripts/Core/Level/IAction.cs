@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public interface IPlayerAction: IDisposable
+    public interface IAction: IDisposable
     {
         public bool Perform(Vector2Int coords);
     }

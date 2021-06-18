@@ -7,7 +7,7 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelInputView : MonoBehaviour, IInjectable, IPointerClickHandler
     {
         [Inject] [SerializeField] private LevelModel model;
-        [Inject] private LevelController controller;
+        [Inject] private ITileClick tileClick;
         [Inject(Name="MainCamera")] private Camera activeCamera;
 
         [SerializeField] private RectTransform touchScreen;
@@ -37,7 +37,7 @@ namespace Variecs.ProjectDII.Core.Level
                 Mathf.InverseLerp(positions[0].y, positions[2].y, worldPoint.y));
             coords *= model.Data.fieldSize;
             
-            controller.OnTileClick(new Vector2Int(Mathf.FloorToInt(coords.x), Mathf.FloorToInt(coords.y)));
+            tileClick.TileClick(new Vector2Int(Mathf.FloorToInt(coords.x), Mathf.FloorToInt(coords.y)));
         }
         
         protected void OnDestroy()

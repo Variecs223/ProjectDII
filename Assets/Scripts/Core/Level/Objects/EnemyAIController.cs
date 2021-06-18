@@ -9,7 +9,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         [field: Inject] public IMovable Movable { get; protected set; }
 
         [Inject(Name = LevelData.CurrentLevelTag)]
-        private LevelController levelController;
+        private IObjectControllerContainer levelController;
 
         private bool stationary = true;
         

@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d384d65625b74ad39a88481df941e201, type: 3}
   m_Name: BoxData
   m_EditorClassIdentifier: 
-  parentContext: {fileID: 11400000, guid: f8f0b83a259993e43b27adc44b7894b8, type: 2}
+  parentContext: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
+  objectType: 1
+  canCharge: 0
   boxPrefab: {fileID: 4317121765873758772, guid: 56d06671b8a29b94f8d88fbbc908d563, type: 3}

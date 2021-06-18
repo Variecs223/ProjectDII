@@ -5,21 +5,19 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class LevelController: IController, IInjectable, ITileClick, IObjectControllerContainer, IEndConditionChecker
+    public class LevelEditorController: IController, IInjectable, ITileClick, IObjectControllerContainer
     {
         [Inject] private LevelModel model;
-        [Inject] private IFactory<IAction, ActionType> playerActionFactory;
+        [Inject] private LevelEditorModel editorModel;
+        [Inject] private IFactory<IAction, ObjectType> placeObjectActionFactory;
 
         public List<IController> ObjectControllers { get; } = new List<IController>();
         private readonly List<IController> removalList = new List<IController>();
-
-
-        private bool tempState;
         
         public void OnInjected()
         {
-            model.OnObjectAdded += AddController;
             model.OnRemoved += Dispose;
+            model.OnObjectAdded += AddController;
         }
 
         public void AddController(IObjectPackage package)
@@ -37,54 +35,18 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void TileClick(Vector2Int coords)
         {
-            if (tempState || model.actions[model.selectedAction].Amount <= 0)
+            if (editorModel.SelectedObject == ObjectType.None)
             {
                 return;
             }
             
-            using var action = playerActionFactory.GetInstance(model.actions[model.selectedAction].Type);
+            using var action = placeObjectActionFactory.GetInstance(editorModel.SelectedObject);
 
-            if (action.Perform(coords))
-            {
-                model.actions[model.selectedAction].Amount--;
-            }
-        }
-
-        public bool CheckVictory(EndConditionType type)
-        {
-            if (!model.WinConditions.ContainsKey(type) || !model.WinConditions[type].Check())
-            {
-                return false;
-            }
-            
-            tempState = true;
-            return true;
-
-        }
-
-        public bool CheckDefeat(EndConditionType type)
-        {
-            if (!model.LoseConditions.ContainsKey(type) || !model.LoseConditions[type].Check())
-            {
-                return false;
-            }
-            
-            tempState = true;
-            return true;
+            action.Perform(coords);
         }
 
         public void Update(float deltaTime)
         {
-            if (!tempState)
-            {
-                foreach (var controller in ObjectControllers)
-                {
-                    controller.Update(deltaTime);
-                }
-                
-                CheckDefeat(EndConditionType.ChargeCollision);
-            }
-            
             foreach (var controller in removalList.Where(controller => ObjectControllers.Contains(controller)))
             {
                 ObjectControllers.Remove(controller);
@@ -100,8 +62,8 @@ namespace Variecs.ProjectDII.Core.Level
         {
             if (model != null)
             {
-                model.OnRemoved -= Dispose;
                 model.OnObjectAdded -= AddController;
+                model.OnRemoved -= Dispose;
                 
                 if (model.Data != null)
                 {
@@ -109,7 +71,7 @@ namespace Variecs.ProjectDII.Core.Level
                     model.Data.UnbindObject(this);
                 }
             }
-
+            
             foreach (var controller in ObjectControllers)
             {
                 controller.Dispose();

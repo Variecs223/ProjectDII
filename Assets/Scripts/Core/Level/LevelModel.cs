@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Objects;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -26,6 +27,7 @@ namespace Variecs.ProjectDII.Core.Level
         public LevelData Data => data;
         InjectorContext IModel.ModelType => Data;
         public event Action OnRemoved;
+        public event Action OnTilesChanged;
 
         public event Action<IObjectPackage> OnObjectAdded;
 
@@ -133,6 +135,23 @@ namespace Variecs.ProjectDII.Core.Level
             secondTileObjects.RemoveAt(secondObjectIndex);
             
             model.Dispose();
+        }
+
+        public void ReplaceTile(Vector2Int coords, TileType type)
+        {
+            if (coords.x < 0 || coords.y < 0 || coords.x >= Data.fieldSize.x || coords.y >= Data.fieldSize.y)
+            {
+                Debug.LogError($"Incorrect coords {coords} when trying to place tile {type}");
+            }
+
+            var index = coords.y * Data.fieldSize.x + coords.x;
+            var oldTile = tiles[index];
+            var newTile = tileFactory.GetInstance(type);
+
+            newTile.objects = oldTile.objects;
+            tiles[index] = newTile;
+
+            OnTilesChanged?.Invoke();
         }
         
         public void Dispose()

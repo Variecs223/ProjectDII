@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyTurnRightData
   m_EditorClassIdentifier: 
   parentContext: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
-  objectType: 1
+  objectType: 2
   canCharge: 1
   enemyPrefab: {fileID: 5259510105823004800, guid: 8ab28d2c2e73239408deac1c991d3850, type: 3}
   baseSpeed: 2

@@ -10,7 +10,6 @@ namespace Variecs.ProjectDII.Core.Level
         public const string ObjectContainerName = "ObjectContainer";
         
         [Inject] [SerializeField] private LevelModel model;
-        [Inject] private LevelController controller;
 
         [SerializeField] private RawImage levelDisplay;
         [SerializeField] private RectTransform objectContainer;
@@ -32,7 +31,18 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 levelDisplay = GetComponent<RawImage>();
             }
+            
+            UpdateTiles();
 
+            InjectorContext.BaseContext.Bind<Transform>().ToValue(objectContainer).ForName(ObjectContainerName);
+            
+            model.OnObjectAdded += AddViews;
+            model.OnTilesChanged += UpdateTiles;
+            model.OnRemoved += DestroyGameObject;
+        }
+
+        public void UpdateTiles()
+        {
             tileBuffer = new ComputeBuffer(model.Data.tiles.Length, sizeof(int)) { name = "_TileBuffer" };
             tileBuffer.SetData(model.Data.tiles);
 
@@ -41,11 +51,6 @@ namespace Variecs.ProjectDII.Core.Level
             levelDisplay.material.SetInt(fieldSizeXParamName, model.Data.fieldSize.x);
             levelDisplay.material.SetInt(fieldSizeYParamName, model.Data.fieldSize.y);
             levelDisplay.material.SetBuffer(tileBufferParamName, tileBuffer);
-
-            InjectorContext.BaseContext.Bind<Transform>().ToValue(objectContainer).ForName(ObjectContainerName);
-            
-            model.OnObjectAdded += AddViews;
-            model.OnRemoved += DestroyGameObject;
         }
 
         protected void AddViews(IObjectPackage package)
@@ -95,6 +100,7 @@ namespace Variecs.ProjectDII.Core.Level
             if (model != null)
             {
                 model.OnRemoved -= DestroyGameObject;
+                model.OnTilesChanged -= UpdateTiles;
                 model.OnObjectAdded -= AddViews;
 
                 if (model.Data != null)

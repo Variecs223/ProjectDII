@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.Objects
@@ -9,7 +10,7 @@ namespace Variecs.ProjectDII.Core.Level.Objects
     {
         [field: Inject] public BaseObjectModel Model { get; protected set; }
         [Inject(Name=LevelData.CurrentLevelTag)] private LevelModel levelModel;
-        [Inject(Name=LevelData.CurrentLevelTag)] private LevelController levelController;
+        [Inject(Name=LevelData.CurrentLevelTag)] private IObjectControllerContainer levelController;
 
         private float excess;
 

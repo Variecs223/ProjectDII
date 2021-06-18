@@ -6,21 +6,21 @@ using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
 {
-    public class PlayerActionFactory: IFactory<IPlayerAction, PlayerActionType>
+    public class ActionFactory: IFactory<IAction, ActionType>
     {
         [Inject] private InjectorContext context;
         
         public bool ManuallyInjected => true;
 
-        private readonly Dictionary<PlayerActionType, IFactory<IPlayerAction>> concreteFactories = new Dictionary<PlayerActionType, IFactory<IPlayerAction>>();
-        public IReadOnlyDictionary<PlayerActionType, IFactory<IPlayerAction>> ConcreteFactories => concreteFactories;
+        private readonly Dictionary<ActionType, IFactory<IAction>> concreteFactories = new Dictionary<ActionType, IFactory<IAction>>();
+        public IReadOnlyDictionary<ActionType, IFactory<IAction>> ConcreteFactories => concreteFactories;
 
-        public PlayerActionFactory()
+        public ActionFactory()
         {
-            concreteFactories.Add(PlayerActionType.PlaceBox, new ObjectPoolFactory<PlaceBoxPlayerAction>());
+            concreteFactories.Add(ActionType.PlaceBox, new PlaceObjectAction.ConcreteFactory(ObjectType.Box));
         }
         
-        public IPlayerAction GetInstance(PlayerActionType type)
+        public IAction GetInstance(ActionType type)
         {
             if (!concreteFactories.ContainsKey(type))
             {

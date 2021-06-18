@@ -4,7 +4,7 @@
     {
         public bool ManuallyInjected => false;
         
-        public TModel GetInstance()
+        public virtual TModel GetInstance()
         {
             return ObjectPool<TModel>.Get();
         }

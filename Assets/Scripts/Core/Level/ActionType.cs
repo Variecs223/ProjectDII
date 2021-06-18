@@ -1,6 +1,6 @@
 ﻿namespace Variecs.ProjectDII.Core.Level
 {
-    public enum PlayerActionType
+    public enum ActionType
     {
         PlaceBox = 1
     }

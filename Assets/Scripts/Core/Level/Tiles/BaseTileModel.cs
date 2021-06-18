@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Variecs.ProjectDII.Core.Level.Objects;
 
-namespace Variecs.ProjectDII.Core.Level
+namespace Variecs.ProjectDII.Core.Level.Tiles
 {
     [Serializable]
     public class BaseTileModel: IDisposable
@@ -16,7 +16,6 @@ namespace Variecs.ProjectDII.Core.Level
         }
 
         public List<ObjectTransitionState> objects = new List<ObjectTransitionState>();
-        public string test;
 
         public virtual bool AllowObject(ObjectType type)
         {
