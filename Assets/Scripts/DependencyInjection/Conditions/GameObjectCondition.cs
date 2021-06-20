@@ -21,7 +21,14 @@ namespace Variecs.ProjectDII.DependencyInjection.Conditions
         
         public bool IsFulfilled(object target, FieldInfo fieldInfo)
         {
-            return target is Component component && component.gameObject == TargetGameObject;
+            return target is Component component && IsGameObject(component.gameObject, TargetGameObject);
+        }
+
+        private static bool IsGameObject(GameObject source, GameObject target)
+        {
+            var parent = source.transform.parent;
+            
+            return source == target || parent != null && IsGameObject(parent.gameObject, target);
         }
 
         public void Dispose()

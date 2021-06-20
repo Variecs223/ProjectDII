@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
 
-namespace Variecs.ProjectDII.Core.Level
+namespace Variecs.ProjectDII.Core.Level.LevelEditor
 {
     public class LevelEditorController: IController, IInjectable, ITileClick, IObjectControllerContainer
     {

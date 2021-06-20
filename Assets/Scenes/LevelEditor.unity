@@ -377,6 +377,7 @@ MonoBehaviour:
   injectionContext: {fileID: 11400000, guid: f8f0b83a259993e43b27adc44b7894b8, type: 2}
   injectionName: LevelContainer
   levelData: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
+  levelView: {fileID: 3608457826972836566, guid: d8f003dd42c14c146b403949a9973502, type: 3}
   objectDatas:
   - {fileID: 11400000, guid: 0649d714a415d4348a79b1355b24054a, type: 2}
   - {fileID: 11400000, guid: afd5721dd248929479442d4e9b73a36e, type: 2}

@@ -8,6 +8,7 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelInitializer : NameBindingBehaviour, IDisposable
     {
         [SerializeField] private LevelData levelData;
+        [SerializeField] private GameObject levelView;
         [SerializeField] private List<InjectorContext> objectDatas;
 
         private LevelModel model;
@@ -19,6 +20,7 @@ namespace Variecs.ProjectDII.Core.Level
             base.Awake();
 
             InjectorContext.BaseContext.Bind<Camera>().ToValue(Camera.main).ForName("MainCamera");
+            InjectorContext.BaseContext.Bind<GameObject>().ToValue(levelView).ForType<LevelData>();
             
             levelData.Init();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Actions;
+using Variecs.ProjectDII.Core.Level.LevelEditor;
 using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
@@ -25,9 +26,10 @@ namespace Variecs.ProjectDII.Core.Level
         }
 
         public const string CurrentLevelTag = "CurrentLevel";
+        public const string LevelContainerTag = "LevelContainer";
         
-        [SerializeField] private GameObject viewPrefab;
-        [Inject(Name="LevelContainer")] [SerializeField] private Transform viewContainer;
+        [Inject(Optional=true)] [SerializeField] private GameObject viewPrefab;
+        [Inject(Name=LevelContainerTag)] [SerializeField] private Transform viewContainer;
         public Vector2Int fieldSize;
         public TileType[] tiles;
         public ObjectLocation[] objects;
@@ -88,11 +90,12 @@ namespace Variecs.ProjectDII.Core.Level
             return controller;
         }
 
-        public GameObject GetLevelView(LevelModel model, ITileClick controller)
+        public GameObject GetLevelView(LevelModel model, ITileClick controller, LevelEditorModel editorModel = null)
         {
             var view = Instantiate(viewPrefab, viewContainer);
             
             Bind<LevelModel>().ToValue(model).ForGameObject(view);
+            Bind<LevelEditorModel>().ToValue(editorModel).ForGameObject(view);
             Bind<ITileClick>().ToValue(controller).ForGameObject(view);
 
             foreach (var injectable in view.GetComponentsInChildren<IInjectable>())

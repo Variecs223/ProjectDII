@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.LevelEditor;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -8,6 +9,7 @@ namespace Variecs.ProjectDII.Core.Level
     public class LevelEditorInitializer : NameBindingBehaviour, IDisposable
     {
         [SerializeField] private LevelData levelData;
+        [SerializeField] private GameObject levelView;
         [SerializeField] private List<InjectorContext> objectDatas;
 
         private LevelModel model;
@@ -20,6 +22,7 @@ namespace Variecs.ProjectDII.Core.Level
             base.Awake();
 
             InjectorContext.BaseContext.Bind<Camera>().ToValue(Camera.main).ForName("MainCamera");
+            InjectorContext.BaseContext.Bind<GameObject>().ToValue(levelView).ForType<LevelData>();
             
             levelData.Init();
 
@@ -32,7 +35,7 @@ namespace Variecs.ProjectDII.Core.Level
             model = levelData.GetLevelModel();
             editorModel = levelData.GetLevelEditorModel(model);
             controller = levelData.GetLevelEditorController(model, editorModel);
-            layoutView = levelData.GetLevelView(model, controller).GetComponent<LevelLayoutView>();
+            layoutView = levelData.GetLevelView(model, controller, editorModel).GetComponent<LevelLayoutView>();
             model.Load();
         }
 

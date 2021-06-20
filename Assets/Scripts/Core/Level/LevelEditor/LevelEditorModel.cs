@@ -2,7 +2,7 @@
 using UnityEngine;
 using Variecs.ProjectDII.DependencyInjection;
 
-namespace Variecs.ProjectDII.Core.Level
+namespace Variecs.ProjectDII.Core.Level.LevelEditor
 {
     [Serializable]
     public class LevelEditorModel: IModel, IInjectable
