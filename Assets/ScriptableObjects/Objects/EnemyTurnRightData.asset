@@ -15,6 +15,7 @@ MonoBehaviour:
   parentContext: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
   objectType: 2
   canCharge: 1
+  icon: {fileID: -1766389781502433406, guid: 2aaac6bb4ff1be448b0cadc1cf5cea91, type: 3}
   enemyPrefab: {fileID: 5259510105823004800, guid: 8ab28d2c2e73239408deac1c991d3850, type: 3}
   baseSpeed: 2
   directionPreferences: 00000000010000000300000002000000

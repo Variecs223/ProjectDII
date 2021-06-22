@@ -15,6 +15,7 @@ MonoBehaviour:
   parentContext: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
   objectType: 7
   canCharge: 0
+  icon: {fileID: 8277753512624892258, guid: 2aaac6bb4ff1be448b0cadc1cf5cea91, type: 3}
   accumulatorPrefab: {fileID: 5414586849143599365, guid: 2c9011a812928cd4f81255cc3112475a, type: 3}
   capacity: 1
   minDistance: 0.2

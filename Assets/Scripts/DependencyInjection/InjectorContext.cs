@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 namespace Variecs.ProjectDII.DependencyInjection
 {
     [CreateAssetMenu(fileName = "InjectorContext", menuName = "DII/Dependency Injection/Injector Context", order = 0)]
-    public class InjectorContext : ScriptableObject, IDisposable
+    public class InjectorContext : ScriptableObject
     {
         private static InjectorContext baseContext;
 
@@ -61,7 +61,7 @@ namespace Variecs.ProjectDII.DependencyInjection
             Inject(this);
         }
         
-        protected virtual void PreInject()
+        public virtual void OnPreInjected()
         {
             Initialized = true;
 
@@ -76,7 +76,7 @@ namespace Variecs.ProjectDII.DependencyInjection
 
                 if (!ParentContext.Initialized)
                 {
-                    ParentContext.PreInject();
+                    ParentContext.OnPreInjected();
                 }
             }
         }
@@ -281,7 +281,7 @@ namespace Variecs.ProjectDII.DependencyInjection
         {
             if (!Initialized)
             {
-                PreInject();
+                OnPreInjected();
             }
 
             if (injectedObjects.Contains(target))
@@ -305,6 +305,7 @@ namespace Variecs.ProjectDII.DependencyInjection
                 }
             }
             
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var field in fields.Where(f => f.GetCustomAttributes<InjectListAttribute>().Any()))
             {
                 if (!InjectListField(target, field))
@@ -363,7 +364,12 @@ namespace Variecs.ProjectDII.DependencyInjection
             {
                 foreach (var injection in injections[subType].Where(injection => injection.CheckConditions(target, field)))
                 {
-                    list.Add(injection.Inject());
+                    var value = injection.Inject();
+                    
+                    if (!list.Contains(value))
+                    {
+                        list.Add(value);
+                    }
                 }
             }
             

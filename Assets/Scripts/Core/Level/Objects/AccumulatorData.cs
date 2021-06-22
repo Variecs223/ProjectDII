@@ -12,9 +12,9 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         public int capacity = 1;
         public float minDistance = 0.2f;
         
-        protected override void PreInject()
+        public override void OnPreInjected()
         {
-            base.PreInject();
+            base.OnPreInjected();
 
             Bind<AccumulatorData>().ToValue(this);
             Bind<BaseObjectData>().ToValue(this);

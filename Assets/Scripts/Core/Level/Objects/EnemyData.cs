@@ -12,9 +12,9 @@ namespace Variecs.ProjectDII.Core.Level.Objects
         public float baseSpeed;
         public Direction[] directionPreferences;
         
-        protected override void PreInject()
+        public override void OnPreInjected()
         {
-            base.PreInject();
+            base.OnPreInjected();
 
             Bind<EnemyData>().ToValue(this);
             Bind<BaseObjectData>().ToValue(this);

@@ -60,6 +60,8 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 objectData.Dispose();
             }
+            
+            InjectorContext.BaseContext.Dispose();
         }
     }
 }

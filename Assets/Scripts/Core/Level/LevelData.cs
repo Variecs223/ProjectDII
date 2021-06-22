@@ -2,6 +2,7 @@
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Actions;
 using Variecs.ProjectDII.Core.Level.LevelEditor;
+using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
@@ -38,18 +39,19 @@ namespace Variecs.ProjectDII.Core.Level
         public EndConditionType[] loseConditions = { EndConditionType.Overcharge, EndConditionType.ChargeCollision };
         public float minChargedDistance = 0.9f;
         
-        protected override void PreInject()
+        public override void OnPreInjected()
         {
-            base.PreInject();
+            base.OnPreInjected();
             
             Bind<InjectorContext>().ToValue(this);
             Bind<LevelData>().ToValue(this);
             Bind<IFactory<BaseTileModel, TileType>>().ToSingleton<TileFactory>();
             Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
-            Bind<IFactory<PlaceObjectAction>>().ToSingleton<ObjectPoolFactory<PlaceObjectAction>>().ForType<PlaceObjectAction.Factory>();
             Bind<IFactory<IAction, ActionType>>().ToSingleton<ActionFactory>();
             Bind<IFactory<IAction, ObjectType>>().ToSingleton<PlaceObjectAction.Factory>();
             Bind<IFactory<IEndCondition, EndConditionType>>().ToSingleton<EndConditionFactory>();
+            Bind<IFactory<ObjectSelectionItemView, ObjectSelectionItemView.Package>>().ToSingleton<ObjectSelectionItemView.Factory>();
+            Bind<IFactory<PlaceObjectAction>>().ToSingleton<ObjectPoolFactory<PlaceObjectAction>>().ForType<PlaceObjectAction.Factory>();
         }
 
         public LevelModel GetLevelModel()

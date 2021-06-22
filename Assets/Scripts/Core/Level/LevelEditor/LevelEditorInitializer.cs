@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.LevelEditor;
+using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level
@@ -10,7 +11,7 @@ namespace Variecs.ProjectDII.Core.Level
     {
         [SerializeField] private LevelData levelData;
         [SerializeField] private GameObject levelView;
-        [SerializeField] private List<InjectorContext> objectDatas;
+        [SerializeField] private List<BaseObjectData> objectDatas;
 
         private LevelModel model;
         private LevelEditorModel editorModel;
@@ -56,13 +57,19 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void Dispose()
         {
-            model.Dispose();
-            levelData.Dispose();
+            model?.Dispose();
+
+            if (levelData != null)
+            {
+                levelData.Dispose();
+            }
             
             foreach (var objectData in objectDatas)
             {
                 objectData.Dispose();
             }
+            
+            InjectorContext.BaseContext.Dispose();
         }
     }
 }

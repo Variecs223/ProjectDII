@@ -9,13 +9,11 @@ namespace Variecs.ProjectDII.Core.Level.Objects
     {
         [SerializeField] private GameObject boxPrefab;
 
-        protected override void PreInject()
+        public override void OnPreInjected()
         {
-            base.PreInject();
+            base.OnPreInjected();
 
             Bind<BoxData>().ToValue(this);
-            Bind<BaseObjectData>().ToValue(this);
-            BaseContext.Bind<BaseObjectData>().ToValue(this).ForList();
             Bind<GameObject>().ToValue(boxPrefab).ForType<BoxPackage>();
             Bind<Transform>().ToName(LevelLayoutView.ObjectContainerName).ForType<BoxPackage>();
             MarkAsInjected(boxPrefab);

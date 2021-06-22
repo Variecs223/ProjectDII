@@ -15,4 +15,5 @@ MonoBehaviour:
   parentContext: {fileID: 11400000, guid: 74fb1d2d65a5fb840b272e5aecc891f4, type: 2}
   objectType: 1
   canCharge: 0
+  icon: {fileID: -8076552262776366635, guid: 2aaac6bb4ff1be448b0cadc1cf5cea91, type: 3}
   boxPrefab: {fileID: 4317121765873758772, guid: 56d06671b8a29b94f8d88fbbc908d563, type: 3}
