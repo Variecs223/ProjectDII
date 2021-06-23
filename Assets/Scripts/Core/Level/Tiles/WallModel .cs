@@ -1,4 +1,5 @@
-﻿using Variecs.ProjectDII.DependencyInjection;
+﻿using Variecs.ProjectDII.Core.Level.Objects;
+using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.Tiles
 {

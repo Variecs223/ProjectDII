@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.DependencyInjection;
 
-namespace Variecs.ProjectDII.Core.Level
+namespace Variecs.ProjectDII.Core.Level.Objects
 {
     public class ObjectFactory: IFactory<IObjectPackage, ObjectType>, IInjectable
     {

@@ -1,4 +1,4 @@
-﻿namespace Variecs.ProjectDII.Core.Level
+﻿namespace Variecs.ProjectDII.Core.Level.Tiles
 {
     public enum TileType
     {

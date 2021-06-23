@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Actions;
+using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 

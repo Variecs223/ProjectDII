@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Objects;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.LevelEditor

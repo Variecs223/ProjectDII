@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Variecs.ProjectDII.DependencyInjection
 {
-    public interface IBindable<out T>: IDisposable where T: class
+    public interface IBindable<out T>: IDisposable
     {
         T Inject();
         Type GetBindedType();

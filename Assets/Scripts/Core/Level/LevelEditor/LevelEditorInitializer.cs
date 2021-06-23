@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Variecs.ProjectDII.Core.Level.LevelEditor;
 using Variecs.ProjectDII.Core.Level.Objects;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
-namespace Variecs.ProjectDII.Core.Level
+namespace Variecs.ProjectDII.Core.Level.LevelEditor
 {
     public class LevelEditorInitializer : NameBindingBehaviour, IDisposable
     {
@@ -24,6 +25,8 @@ namespace Variecs.ProjectDII.Core.Level
 
             InjectorContext.BaseContext.Bind<Camera>().ToValue(Camera.main).ForName("MainCamera");
             InjectorContext.BaseContext.Bind<GameObject>().ToValue(levelView).ForType<LevelData>();
+            InjectorContext.BaseContext.Bind<List<TileType>>()
+                .ToValue(Enum.GetValues(typeof(TileType)).Cast<TileType>().ToList());
             
             levelData.Init();
 
