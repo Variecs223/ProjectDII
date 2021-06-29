@@ -8,6 +8,8 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
 {
     public class TileSelectionItemView : MonoBehaviour, IInjectable, IPointerClickHandler
     {
+        private static int Counter = 1;
+        
         [Inject] [SerializeField] private LevelEditorModel levelEditorModel;
         [Inject(Optional=true)] [SerializeField] private TileTypeContainer tileTypeContainer;
         [SerializeField] private RawImage icon;
@@ -20,10 +22,21 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
         [SerializeField] private string tileBufferParamName = "_TileBuffer";
 
         private ComputeBuffer tileBuffer;
+
+        protected void Awake()
+        {
+            icon.material = new Material(icon.material);
+        }
         
         public void OnInjected()
         {
-            tileBuffer = new ComputeBuffer(1, sizeof(int)) { name = "_TileBuffer" };
+            tileBuffer = new ComputeBuffer(1, sizeof(int)) { name = $"{tileBufferParamName}/{Counter++}" };
+            
+            UpdateIcon();
+        }
+
+        public void UpdateIcon()
+        {
             tileBuffer.SetData(new[] { tileTypeContainer.type });
 
             icon.material.SetInt(textureSizeXParamName, textureSize.x);
@@ -50,8 +63,8 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
 
         public void Dispose()
         {
-            tileTypeContainer.Dispose();
-            tileBuffer.Dispose();
+            tileTypeContainer?.Dispose();
+            tileBuffer?.Dispose();
         }
 
         public struct Package

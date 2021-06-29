@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Variecs.ProjectDII.DependencyInjection;
@@ -24,16 +25,21 @@ namespace Variecs.ProjectDII.Core.Level
 
         private ComputeBuffer tileBuffer;
         private readonly List<GameObject> objectViews = new List<GameObject>();
-        
-        public void OnInjected()
+
+        protected void Awake()
         {
             if (levelDisplay == null)
             {
                 levelDisplay = GetComponent<RawImage>();
             }
-            
-            UpdateTiles();
 
+            levelDisplay.material = new Material(levelDisplay.material);
+        }
+        
+        public void OnInjected()
+        {
+            tileBuffer = new ComputeBuffer(model.Data.tiles.Length, sizeof(int)) { name = "_TileBuffer" };
+            
             InjectorContext.BaseContext.Bind<Transform>().ToValue(objectContainer).ForName(ObjectContainerName);
             
             model.OnObjectAdded += AddViews;
@@ -43,8 +49,7 @@ namespace Variecs.ProjectDII.Core.Level
 
         public void UpdateTiles()
         {
-            tileBuffer = new ComputeBuffer(model.Data.tiles.Length, sizeof(int)) { name = "_TileBuffer" };
-            tileBuffer.SetData(model.Data.tiles);
+            tileBuffer.SetData(model.tiles.Select(tile => tile.tileType).ToArray());
 
             levelDisplay.material.SetInt(textureSizeXParamName, textureSize.x);
             levelDisplay.material.SetInt(textureSizeYParamName, textureSize.y);

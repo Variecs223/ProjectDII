@@ -50,7 +50,7 @@ Shader "Unlit/Tiling"
             {
                 const uint tileIndex = floor(i.uv.y * _FieldSizeY) * _FieldSizeX + floor(i.uv.x * _FieldSizeX);
                 const uint tileType = _TileBuffer[tileIndex];
-                const float2 tileCoords = float2(tileType % _TextureSizeX, tileType / _TextureSizeX) + 0.5;
+                const float2 tileCoords = float2(tileType % _TextureSizeX + frac(i.uv.x * _FieldSizeX), tileType / _TextureSizeX + frac(i.uv.y * _FieldSizeY));
                 
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, float2(tileCoords.x / _TextureSizeX, tileCoords.y / _TextureSizeY));

@@ -28,6 +28,7 @@ namespace Variecs.ProjectDII.Core.Level.Tiles
             }
 
             var tile = concreteFactories[type].GetInstance();
+            tile.tileType = type;
             
             if (!concreteFactories[type].ManuallyInjected)
             {

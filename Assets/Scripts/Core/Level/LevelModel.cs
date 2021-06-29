@@ -44,6 +44,8 @@ namespace Variecs.ProjectDII.Core.Level
             {
                 tiles[i] = tileFactory.GetInstance(Data.tiles[i]);
             }
+            
+            OnTilesChanged?.Invoke();
 
             objects = new List<BaseObjectModel>();
             
@@ -137,7 +139,7 @@ namespace Variecs.ProjectDII.Core.Level
             model.Dispose();
         }
 
-        public void ReplaceTile(Vector2Int coords, TileType type)
+        public void ReplaceTile(TileType type, Vector2Int coords, bool checkObjects = false)
         {
             if (coords.x < 0 || coords.y < 0 || coords.x >= Data.fieldSize.x || coords.y >= Data.fieldSize.y)
             {
@@ -148,6 +150,16 @@ namespace Variecs.ProjectDII.Core.Level
             var oldTile = tiles[index];
             var newTile = tileFactory.GetInstance(type);
 
+            if (checkObjects)
+            {
+                foreach (var objectState in oldTile.objects
+                    .Where(obj => !newTile.AllowObject(obj.Object.Data.objectType)).ToArray())
+                {
+                    objectState.Object.Dispose();
+                    oldTile.objects.Remove(objectState);
+                }
+            }
+            
             newTile.objects = oldTile.objects;
             tiles[index] = newTile;
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Objects;
+using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
 
 namespace Variecs.ProjectDII.Core.Level.LevelEditor
@@ -11,6 +12,7 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
         [Inject] private LevelModel model;
         [Inject] private LevelEditorModel editorModel;
         [Inject] private IFactory<IAction, ObjectType> placeObjectActionFactory;
+        [Inject] private IFactory<IAction, TileType> placeTileActionFactory;
 
         public List<IController> ObjectControllers { get; } = new List<IController>();
         private readonly List<IController> removalList = new List<IController>();
@@ -36,14 +38,19 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
 
         public void TileClick(Vector2Int coords)
         {
-            if (editorModel.SelectedObject == ObjectType.None)
+            if (editorModel.SelectedObject != ObjectType.None)
             {
-                return;
+                using var action = placeObjectActionFactory.GetInstance(editorModel.SelectedObject);
+
+                action.Perform(coords);
             }
             
-            using var action = placeObjectActionFactory.GetInstance(editorModel.SelectedObject);
+            if (editorModel.SelectedTile != TileType.None)
+            {
+                using var action = placeTileActionFactory.GetInstance(editorModel.SelectedTile);
 
-            action.Perform(coords);
+                action.Perform(coords);
+            }
         }
 
         public void Update(float deltaTime)

@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 8133604666538912277}
   - component: {fileID: 2052821166474870013}
   - component: {fileID: 4536313160831009854}
-  - component: {fileID: 5355489887996753840}
+  - component: {fileID: 2874909904711644384}
   - component: {fileID: 1739775466096415265}
   m_Layer: 0
   m_Name: LevelLayout
@@ -163,7 +163,7 @@ RectTransform:
   m_GameObject: {fileID: 6735630632224752271}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0004029, y: 1.0004029, z: 1.0004029}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2975739157096340051}
   m_Father: {fileID: 3608457826972836567}
@@ -209,7 +209,7 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
---- !u!114 &5355489887996753840
+--- !u!114 &2874909904711644384
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6936168079949137200}
   - component: {fileID: 7618431114630952308}
-  - component: {fileID: 8948439194517424313}
+  - component: {fileID: 7505405096541490415}
   - component: {fileID: 7111841951144175716}
   m_Layer: 0
   m_Name: TileSelectorList
@@ -301,7 +301,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8341277732931508255}
   m_CullTransparentMesh: 1
---- !u!114 &8948439194517424313
+--- !u!114 &7505405096541490415
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

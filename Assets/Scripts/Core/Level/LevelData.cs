@@ -49,10 +49,12 @@ namespace Variecs.ProjectDII.Core.Level
             Bind<IFactory<IObjectPackage, ObjectType>>().ToSingleton<ObjectFactory>();
             Bind<IFactory<IAction, ActionType>>().ToSingleton<ActionFactory>();
             Bind<IFactory<IAction, ObjectType>>().ToSingleton<PlaceObjectAction.Factory>();
+            Bind<IFactory<IAction, TileType>>().ToSingleton<PlaceTileAction.Factory>();
             Bind<IFactory<IEndCondition, EndConditionType>>().ToSingleton<EndConditionFactory>();
             Bind<IFactory<ObjectSelectionItemView, ObjectSelectionItemView.Package>>().ToSingleton<ObjectSelectionItemView.Factory>();
             Bind<IFactory<TileSelectionItemView, TileSelectionItemView.Package>>().ToSingleton<TileSelectionItemView.Factory>();
             Bind<IFactory<PlaceObjectAction>>().ToSingleton<ObjectPoolFactory<PlaceObjectAction>>().ForType<PlaceObjectAction.Factory>();
+            Bind<IFactory<PlaceTileAction>>().ToSingleton<ObjectPoolFactory<PlaceTileAction>>().ForType<PlaceTileAction.Factory>();
         }
 
         public LevelModel GetLevelModel()

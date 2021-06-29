@@ -15,11 +15,6 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
         
         public void OnInjected()
         {
-            if (itemContainer == null)
-            {
-                itemContainer = transform;
-            }
-            
             foreach (var tileType in tileTypeList)
             {
                 itemFactory.GetInstance(new TileSelectionItemView.Package

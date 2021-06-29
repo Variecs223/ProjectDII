@@ -15,6 +15,7 @@ namespace Variecs.ProjectDII.Core.Level.Tiles
             public TransitionState State;
         }
 
+        public TileType tileType;
         public List<ObjectTransitionState> objects = new List<ObjectTransitionState>();
 
         public virtual bool AllowObject(ObjectType type)

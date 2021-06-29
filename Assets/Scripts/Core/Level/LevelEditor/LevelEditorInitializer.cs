@@ -26,7 +26,7 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
             InjectorContext.BaseContext.Bind<Camera>().ToValue(Camera.main).ForName("MainCamera");
             InjectorContext.BaseContext.Bind<GameObject>().ToValue(levelView).ForType<LevelData>();
             InjectorContext.BaseContext.Bind<List<TileType>>()
-                .ToValue(Enum.GetValues(typeof(TileType)).Cast<TileType>().ToList());
+                .ToValue(Enum.GetValues(typeof(TileType)).Cast<TileType>().Where(type => type != TileType.None).ToList());
             
             levelData.Init();
 
