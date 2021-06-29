@@ -25,6 +25,8 @@ namespace Variecs.ProjectDII.Core.Level.Objects
             var uvCoords = objectModel.coords / levelData.fieldSize;
             rectTransform.anchorMin = uvCoords;
             rectTransform.anchorMax = uvCoords;
+
+            rectTransform.rotation = Quaternion.AngleAxis(90 * (int) objectModel.direction, Vector3.forward);
         }
 
         protected void OnDestroy()

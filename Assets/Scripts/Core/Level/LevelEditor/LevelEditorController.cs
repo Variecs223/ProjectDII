@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Variecs.ProjectDII.Core.Level.Actions;
 using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.Core.Level.Tiles;
 using Variecs.ProjectDII.DependencyInjection;
@@ -11,7 +12,7 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
     {
         [Inject] private LevelModel model;
         [Inject] private LevelEditorModel editorModel;
-        [Inject] private IFactory<IAction, ObjectType> placeObjectActionFactory;
+        [Inject] private IFactory<IAction, PlaceObjectAction.Package> placeObjectActionFactory;
         [Inject] private IFactory<IAction, TileType> placeTileActionFactory;
 
         public List<IController> ObjectControllers { get; } = new List<IController>();
@@ -40,7 +41,11 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
         {
             if (editorModel.SelectedObject != ObjectType.None)
             {
-                using var action = placeObjectActionFactory.GetInstance(editorModel.SelectedObject);
+                using var action = placeObjectActionFactory.GetInstance(new PlaceObjectAction.Package
+                {
+                    type = editorModel.SelectedObject, 
+                    direction = editorModel.SelectedDirection
+                });
 
                 action.Perform(coords);
             }

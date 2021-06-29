@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.DependencyInjection;
 
@@ -8,6 +9,7 @@ namespace Variecs.ProjectDII.Core.Level.Actions
     {
         [Inject(Name=LevelData.CurrentLevelTag)] private LevelModel levelModel;
         public ObjectType TargetType { get; private set; }
+        public Direction TargetDirection { get; private set; } = Direction.Up;
 
         public bool Perform(Vector2Int coords)
         {
@@ -16,7 +18,7 @@ namespace Variecs.ProjectDII.Core.Level.Actions
                 return false;
             }
             
-            levelModel.AddObject(TargetType, coords);
+            levelModel.AddObject(TargetType, coords, TargetDirection);
             return true;
 
         }
@@ -28,18 +30,26 @@ namespace Variecs.ProjectDII.Core.Level.Actions
             ObjectPool<PlaceObjectAction>.Put(this);
         }
 
-        public class Factory: IFactory<PlaceObjectAction, ObjectType>
+        [Serializable]
+        public struct Package
+        {
+            public ObjectType type;
+            public Direction direction;
+        }
+        
+        public class Factory: IFactory<PlaceObjectAction, Package>
         {
             [Inject] private InjectorContext context;
             [Inject] private IFactory<PlaceObjectAction> baseObjectFactory;
 
             public bool ManuallyInjected => false;
 
-            public PlaceObjectAction GetInstance(ObjectType type)
+            public PlaceObjectAction GetInstance(Package package)
             {
                 var instance = baseObjectFactory.GetInstance();
 
-                instance.TargetType = type;
+                instance.TargetType = package.type;
+                instance.TargetDirection = package.direction;
                 context.Inject(instance);
 
                 return instance;

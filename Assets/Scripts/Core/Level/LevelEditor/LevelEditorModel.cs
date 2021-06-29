@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using Variecs.ProjectDII.Core.Level.Objects;
 using Variecs.ProjectDII.Core.Level.Tiles;
@@ -15,6 +16,7 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
         
         private ObjectType selectedObject = ObjectType.None;
         private TileType selectedTile = TileType.None;
+        private Direction selectedDirection = Direction.Up;
 
         public ObjectType SelectedObject
         {
@@ -36,11 +38,33 @@ namespace Variecs.ProjectDII.Core.Level.LevelEditor
             }
         }
 
+        public Direction SelectedDirection => selectedDirection;
+
         public event Action OnRemoved;
 
         public void OnInjected()
         {
             levelModel.OnRemoved += Dispose;
+        }
+
+        public void FlipDirection()
+        {
+            selectedDirection = (Direction) (((int) selectedDirection + 1) % 4);
+        }
+
+        public void Save()
+        {
+            levelModel.Data.tiles = levelModel.tiles.Select(tile => tile.tileType).ToArray();
+            levelModel.Data.objects = levelModel.objects.Select(obj => new LevelData.ObjectLocation
+            {
+                Coords = new Vector2Int(Mathf.FloorToInt(obj.coords.x), Mathf.FloorToInt(obj.coords.y)),
+                Direction = obj.direction,
+                Type = obj.Data.objectType
+            }).ToArray();
+            
+#if UNITY_EDITOR
+            UnityEditor.AssetDatabase.SaveAssets();
+#endif
         }
 
         public void Dispose()
